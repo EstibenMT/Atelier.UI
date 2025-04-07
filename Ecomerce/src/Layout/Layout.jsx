@@ -6,13 +6,16 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/24/outline"
 import Footer from "../components/Footer"
+import logo from "../assets/LogoB.png"
 
 const Layout = () => {
   return (
     <div>
       <header className="">
-        <div className="bg-black text-white flex items-center justify-between pr-16 px-6 py-3">
-          <div className="w-1/5"></div>
+        <div className="bg-black text-white flex items-center justify-end pr-16 px-6 py-3">
+          <div className="w-1/5">
+            <img src={logo} alt="Logo Ecomerce" className=" w-14" />
+          </div>
           <div className="flex items-center bg-white  rounded-md overflow-hidden w-1/2">
             <input
               type="text"
