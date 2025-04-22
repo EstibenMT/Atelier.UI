@@ -17,11 +17,13 @@ const PruductCard = ({product}) => {
         />
       </div>
 
-      <div className="px-4 pb-4 text-center">
-        <p className="text-gray-400 text-xs uppercase">{product.brand}</p>
-        <h3 className="font-bold text-lg mt-1">{product.name}</h3>
+      <div className="px-4 pb-4 ">
+        <p className="text-gray-400 text-xs uppercase font-sans ">
+          {product.brand}
+        </p>
+        <h3 className="font-bold text-lg mt-1 mb-16 font">{product.name}</h3>
 
-        <div className="flex justify-center items-center my-2">
+        <div className="flex my-2">
           {[...Array(5)].map((_, i) => (
             <svg
               key={i}
@@ -29,11 +31,12 @@ const PruductCard = ({product}) => {
               className="h-4 w-4 text-gray-300"
               fill="currentColor"
               viewBox="0 0 24 24"
+              style={{color: product.rating >= i + 1 ? "#FFD700" : "#E0E0E0"}}
             >
               <path d="M12 .587l3.668 7.431L24 9.75l-6 5.849L19.335 24 12 19.896 4.665 24 6 15.599 0 9.75l8.332-1.732z" />
             </svg>
           ))}
-          <span className="text-xs text-gray-400 ml-2">(0)</span>
+          <span className="text-xs text-gray-400 ml-2">({product.rating})</span>
         </div>
 
         {/* Información vendedor y certificado */}

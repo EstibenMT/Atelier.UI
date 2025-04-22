@@ -67,7 +67,11 @@ const Footer = () => {
 
         {/* Logo */}
         <div className="flex items-center">
-          <img src="/tu-logo.png" alt="Place to Pay" className="h-12" />
+          <img
+            src="/Ecomerce/src/assets/og-image.png"
+            alt="Place to Pay"
+            className="h-12"
+          />
         </div>
       </div>
 

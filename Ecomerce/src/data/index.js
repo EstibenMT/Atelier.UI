@@ -7,6 +7,7 @@ export const products = [
     certNumber: "CT-548458",
     price: "459.500",
     stock: "300",
+    rating: 4.5,
   },
   {
     image:
@@ -16,6 +17,7 @@ export const products = [
     certNumber: "CT-548459",
     price: "329.900",
     stock: "150",
+    rating: 4.5,
   },
   {
     image:
@@ -25,6 +27,7 @@ export const products = [
     certNumber: "CT-548460",
     price: "599.000",
     stock: "50",
+    rating: 4.5,
   },
   {
     image:
@@ -43,5 +46,66 @@ export const products = [
     certNumber: "CT-548462",
     price: "259.900",
     stock: "200",
+    rating: 4.5,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "Blusa Floral",
+    brand: "ALONA",
+    certNumber: "CT-548463",
+    price: "389.900",
+    stock: "120",
+    rating: 4.8,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "Pantalón Formal",
+    brand: "ALONA",
+    certNumber: "CT-548464",
+    price: "429.900",
+    stock: "90",
+    rating: 4.6,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "Falda Plisada",
+    brand: "ALONA",
+    certNumber: "CT-548465",
+    price: "349.900",
+    stock: "75",
+    rating: 4.7,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "Saco Casual",
+    brand: "ALONA",
+    certNumber: "CT-548466",
+    price: "529.900",
+    stock: "60",
+    rating: 4.9,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "Top Deportivo",
+    brand: "ALONA",
+    certNumber: "CT-548467",
+    price: "199.900",
+    stock: "150",
+    rating: 4.5,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "Shorts Casuales",
+    brand: "ALONA",
+    certNumber: "CT-548468",
+    price: "279.900",
+    stock: "100",
+    rating: 4.4,
   },
 ]
