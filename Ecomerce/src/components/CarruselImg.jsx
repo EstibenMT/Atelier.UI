@@ -4,18 +4,18 @@ import {FaAngleLeft, FaAngleRight} from "react-icons/fa"
 
 const CarruselImg = () => {
   const images = [
-    "https://picsum.photos/400/300?random=1",
-    "https://picsum.photos/400/300?random=2",
-    "https://picsum.photos/400/300?random=3",
-    "https://picsum.photos/400/300?random=4",
-    "https://picsum.photos/400/300?random=5",
-    "https://picsum.photos/400/300?random=6",
-    "https://picsum.photos/400/300?random=7",
-    "https://picsum.photos/400/300?random=8",
-    "https://picsum.photos/400/300?random=9",
-    "https://picsum.photos/400/300?random=10",
-    "https://picsum.photos/400/300?random=11",
-    "https://picsum.photos/400/300?random=12",
+    "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&h=300&fit=crop",
   ]
   const [currentIndex, setCurrentIndex] = useState(0)
 

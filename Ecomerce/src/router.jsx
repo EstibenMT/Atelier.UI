@@ -3,6 +3,8 @@ import Home from "./pages/Home"
 import Layout from "./Layout/Layout"
 import Userinfo from "./pages/Userinfo"
 import Products from "./pages/Products"
+import PagoExitoso from "./pages/PagoExitoso"
+import ProductDetail from "./pages/ProductDetail"
 import ShoppingCart from "./pages/ShoppingCart"
 
 const router = createBrowserRouter([
@@ -21,6 +23,15 @@ const router = createBrowserRouter([
       {
         path: "/Ecomerce/products",
         element: <Products />,
+      },
+      {
+        path: "/Ecomerce/Pagos",
+        element: <PagoExitoso />,
+      },
+      {
+        path: "/Ecomerce/product/:id",
+        element: <ProductDetail />,
+      },
         },
         {
         path: "/Ecomerce/ShoppingCart",

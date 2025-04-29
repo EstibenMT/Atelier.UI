@@ -1,17 +1,44 @@
 import React from "react"
-import { FaShoppingCart } from "react-icons/fa"
+import {FaShoppingCart} from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux";
 import { addProduct } from "../data/cartSlice";
 
-const PruductCard = ({ product }) => {
+const ProductCard = ({product}) => {
+  const navigate = useNavigate()
     const dispatch = useDispatch();
 
     const handleAddProduct = () => {
-        dispatch(addProduct({ product}));
+        dispatch(addProduct({ product }));
     };
+  // Función para convertir URL de imgur a URL directa de imagen
+  const getImageUrl = (imgurUrl) => {
+    if (!imgurUrl) return ""
+    const imageId = imgurUrl.split("/").pop()
+    return `https://i.imgur.com/${imageId}.jpg`
+  }
+
+  // Validar que el producto exista
+  if (!product) {
+    return <div>Producto no disponible</div>
+  }
+
+  // Obtener valores seguros
+  const imageUrl = product.productImages?.[0]?.imageUrl || ""
+  const brandName = product.brand?.name || "Sin marca"
+  const categories = product.categories || []
+  const stock = product.productVariants?.[0]?.stock || 0
+  const rating = product.rating || 0
+
+  const handleProductClick = () => {
+    navigate(`/Ecomerce/product/${product.productId}`)
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden w-64">
+    <div
+      className="bg-white rounded-lg shadow-md overflow-hidden w-64 cursor-pointer"
+      onClick={handleProductClick}
+    >
       <div className="p-2">
         <span className="bg-blue-500 text-white text-xs font-semibold py-1 px-2 rounded">
           NUEVO
@@ -20,17 +47,17 @@ const PruductCard = ({ product }) => {
 
       <div className="flex justify-center items-center p-4">
         <img
-          src={product.image}
-          alt={product.name}
+          src={getImageUrl(imageUrl)}
+          alt={product.name || "Producto"}
           className="h-48 object-cover"
         />
       </div>
 
-      <div className="px-4 pb-4 ">
-        <p className="text-gray-400 text-xs uppercase font-sans ">
-          {product.brand}
-        </p>
-        <h3 className="font-bold text-lg mt-1 mb-16 font">{product.name}</h3>
+      <div className="px-4 pb-4">
+        <p className="text-gray-400 text-xs uppercase font-sans">{brandName}</p>
+        <h3 className="font-bold text-lg mt-1 mb-4 line-clamp-2 h-14">
+          {product.name || "Sin nombre"}
+        </h3>
 
         <div className="flex my-2">
           {[...Array(5)].map((_, i) => (
@@ -40,26 +67,32 @@ const PruductCard = ({ product }) => {
               className="h-4 w-4 text-gray-300"
               fill="currentColor"
               viewBox="0 0 24 24"
-              style={{color: product.rating >= i + 1 ? "#FFD700" : "#E0E0E0"}}
+              style={{
+                color: rating >= i + 1 ? "#FFD700" : "#E0E0E0",
+              }}
             >
               <path d="M12 .587l3.668 7.431L24 9.75l-6 5.849L19.335 24 12 19.896 4.665 24 6 15.599 0 9.75l8.332-1.732z" />
             </svg>
           ))}
-          <span className="text-xs text-gray-400 ml-2">({product.rating})</span>
+          <span className="text-xs text-gray-400 ml-2">({rating})</span>
         </div>
 
-        {/* Información vendedor y certificado */}
+        {/* Información vendedor y categorías */}
         <div className="text-gray-500 text-xs mt-2">
-          VENDIDO POR: <span className="font-bold">{product.brand}</span>
+          MARCA: <span className="font-bold">{brandName}</span>
           <br />
-          CERTIFICADO NÚMERO:{" "}
-          <span className="font-bold">{product.certNumber}</span>
+          CATEGORÍAS:{" "}
+          <span className="font-bold">
+            {categories.map((cat) => cat.name).join(", ") || "Sin categorías"}
+          </span>
         </div>
 
         {/* Precio y unidades disponibles */}
         <div className="flex justify-between items-center mt-4">
-          <p className="text-blue-600 text-2xl font-bold">${product.price}</p>
-          <p className="text-green-500 text-sm">{product.stock} uds.</p>
+          <p className="text-blue-600 text-2xl font-bold">
+            ${product.price || 0}
+          </p>
+          <p className="text-green-500 text-sm">{stock} uds.</p>
         </div>
 
         {/* Botón de añadir al carrito */}
@@ -72,4 +105,4 @@ const PruductCard = ({ product }) => {
   )
 }
 
-export default PruductCard
+export default ProductCard

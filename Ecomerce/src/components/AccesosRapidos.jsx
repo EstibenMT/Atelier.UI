@@ -2,6 +2,7 @@ import React from "react"
 import {ShoppingCartIcon} from "@heroicons/react/24/outline"
 import {CgShoppingBag} from "react-icons/cg"
 import {Link} from "react-router-dom"
+
 const AccesosRapidos = () => {
   return (
     <div>
