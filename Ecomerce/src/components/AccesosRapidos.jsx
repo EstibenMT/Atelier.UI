@@ -18,6 +18,7 @@ const AccesosRapidos = () => {
             <p className="text-gray-600">Catálogo</p>
           </div>
         </Link>
+      <Link to="/Ecomerce/ShoppingCart">
         <div className="flex flex-col items-center">
           <span
             style={{backgroundColor: "#E4ECFF"}}
@@ -26,7 +27,8 @@ const AccesosRapidos = () => {
             <ShoppingCartIcon className="h-6 w-6 text-blue-500" />
           </span>
           <p className="text-gray-600">Carrito</p>
-        </div>
+          </div>
+        </Link>
       </div>
     </div>
   )

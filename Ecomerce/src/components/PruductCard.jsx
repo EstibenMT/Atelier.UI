@@ -1,6 +1,15 @@
 import React from "react"
-import {FaShoppingCart} from "react-icons/fa"
-const PruductCard = ({product}) => {
+import { FaShoppingCart } from "react-icons/fa"
+import { useDispatch } from "react-redux";
+import { addProduct } from "../data/cartSlice";
+
+const PruductCard = ({ product }) => {
+    const dispatch = useDispatch();
+
+    const handleAddProduct = () => {
+        dispatch(addProduct({ product}));
+    };
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden w-64">
       <div className="p-2">
@@ -54,7 +63,7 @@ const PruductCard = ({product}) => {
         </div>
 
         {/* Botón de añadir al carrito */}
-        <button className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors">
+              <button type="button" onClick={handleAddProduct} className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors">
           <FaShoppingCart />
           Añadir al carrito
         </button>

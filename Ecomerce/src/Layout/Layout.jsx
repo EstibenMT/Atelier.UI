@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline"
 import Footer from "../components/Footer"
 import logo from "../assets/LogoB.png"
+import { Link } from "react-router-dom"
 
 const Layout = () => {
   return (
@@ -34,7 +35,11 @@ const Layout = () => {
             <button className=" bg-black p-1.5 rounded-md border border-white font-semibold px-4 cursor-pointer">
               Iniciar sesion
             </button>
+            <Link to="/Ecomerce/ShoppingCart">
+            <div>
             <ShoppingCartIcon className="h-6 w-6 cursor-pointer mt-2" />
+            </div>
+            </Link>
           </div>
         </div>
 
