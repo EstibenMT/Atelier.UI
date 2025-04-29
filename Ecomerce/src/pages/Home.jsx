@@ -1,13 +1,36 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/24/outline"
 import CarruselImg from "../components/CarruselImg"
 import AccesosRapidos from "../components/AccesosRapidos"
-import PruductCard from "../components/PruductCard"
-import {products} from "../data/index"
+import ProductCard from "../components/PruductCard"
+import {productService} from "../services/productService"
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const productsPerView = 3
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await productService.getAllProducts()
+        setProducts(data)
+      } catch (error) {
+        setError(
+          "No se pudieron cargar los productos. Por favor, intenta de nuevo más tarde."
+        )
+        console.error("Error al obtener los productos:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
@@ -17,6 +40,33 @@ const Home = () => {
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full p-2 bg-gray-100 flex justify-center items-center min-h-[200px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Cargando productos...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="w-full p-2 bg-gray-100 flex justify-center items-center min-h-[200px]">
+        <div className="text-center">
+          <p className="text-red-500 mb-2">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Intentar de nuevo
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -58,7 +108,7 @@ const Home = () => {
                   width: `calc(${100 / productsPerView}% - ${2 / 3}rem)`,
                 }}
               >
-                <PruductCard product={product} />
+                <ProductCard product={product} />
               </div>
             ))}
           </div>
