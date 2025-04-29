@@ -32,7 +32,6 @@ const router = createBrowserRouter([
         path: "/Ecomerce/product/:id",
         element: <ProductDetail />,
       },
-        },
         {
         path: "/Ecomerce/ShoppingCart",
         element: <ShoppingCart />,

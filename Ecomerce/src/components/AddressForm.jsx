@@ -1,9 +1,14 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { CiLocationOn } from "react-icons/ci";
-
+import { getCountry, getState, getCity, getStreetType } from "../services/AddressService";
+ 
 const AddressForm = ({ onSaveAddress, onEditAddress }) => {
     const [mode, setMode] = useState("form")
+    const [departamentos, setDepartamentos] = useState([]);
     const [address, setAddress] = useState({
+        email: "",
+        document: "",
+        countryId: 0,
         pais: "",
         departamento: "",
         ciudad: "",
@@ -13,6 +18,16 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
         numero2: "",
         referencia: ""
     });
+    useEffect(() => {
+        const loadDepartamentos = async () => {
+            const data = await getState()(); // Por ejemplo, si 1 es el countryId de Colombia
+            if (data) {
+                setDepartamentos(data);
+            }
+        };
+
+        loadDepartamentos();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,6 +55,28 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
             { mode === "form" ? (
                 <form className="space-y-4" onSubmit={handleSave}>
                     <h2 className="text-xl font-semibold">Información de entrega</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4" >
+                        <div>
+                            <label className="block text-sm font-medium">Email</label>
+                            <input
+                                type="text"
+                                name="email"
+                                value={address.email}
+                                onChange={handleChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium">Documento</label>
+                            <input
+                                type="text"
+                                name="document"
+                                value={address.document}
+                                onChange={handleChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                        </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-sm font-medium">País</label>
@@ -61,7 +98,11 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             >
                                 <option value="">Seleccionar</option>
-                                {/* Opciones dinámicas */}
+                                {departamentos.map((dep) => (
+                                    <option key={dep.stateId} value={dep.name}>
+                                        {dep.name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div>
@@ -73,7 +114,11 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             >
                                 <option value="">Seleccionar</option>
-                                {/* Opciones dinámicas */}
+                                {departamentos.map((dep) =>(
+                                    <option key={dep.stateId} value={dep.stateId}>
+                                        {dep.name }
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>

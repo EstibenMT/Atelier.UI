@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ShoppingCartCard from "../components/ShoppingCartCard";
 import ShoppingCartResume from "../components/ShoppingCartResume";
 import AddressForm from "../components/AddressForm";
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement, saveAddress } from "../data/cartSlice";
-import { fetchCartData } from "../data/CartThunk";
+
 
 const ShoppingCart = () => {
     const dispatch = useDispatch();
     const { shoppingCartProducts, quantityProducts, total, iva, subtotal } = useSelector(state => state.cart);
     const [mode, setMode] = useState("cart");
     const [buttonMode, setButtonMode] = useState("cart");
-
-    useEffect(() => {
-        dispatch(fetchCartData()); 
-    }, [dispatch]);
 
     const Increment = (index) => {
         dispatch(increment(index));

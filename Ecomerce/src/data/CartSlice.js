@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getSessionId } from "../data/Seccion";
-import { GetShoppingCart } from "../data/CartThunk";
 
 const initialState = {
     sessionId: getSessionId(),
@@ -45,17 +44,6 @@ const cartSlice = createSlice({
             state.shoppingCartProducts = [];
             state.address = null;
         }
-    /*},
-    extraReducers: (builder) => {
-        builder
-            .addCase(GetShoppingCart.fulfilled, (state, action) => {
-                state.shoppingCartProducts = action.payload.shoppingCartProducts;
-                state.total = action.payload.total;
-                state.iva = action.payload.tax;
-                state.subtotal = action.payload.subtotal;
-                state.quantityProducts = action.payload.quantityProducts;
-
-            });*/
     }
 });
 

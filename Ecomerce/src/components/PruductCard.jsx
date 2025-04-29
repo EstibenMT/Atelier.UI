@@ -1,16 +1,10 @@
 import React from "react"
 import {FaShoppingCart} from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux";
-import { addProduct } from "../data/cartSlice";
 
 const ProductCard = ({product}) => {
   const navigate = useNavigate()
-    const dispatch = useDispatch();
-
-    const handleAddProduct = () => {
-        dispatch(addProduct({ product }));
-    };
+    
   // Función para convertir URL de imgur a URL directa de imagen
   const getImageUrl = (imgurUrl) => {
     if (!imgurUrl) return ""
@@ -96,7 +90,7 @@ const ProductCard = ({product}) => {
         </div>
 
         {/* Botón de añadir al carrito */}
-              <button type="button" onClick={handleAddProduct} className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors">
+              <button type="button" className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors">
           <FaShoppingCart />
           Añadir al carrito
         </button>

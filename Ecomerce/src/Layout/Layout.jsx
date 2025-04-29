@@ -7,7 +7,6 @@ import {
 } from "@heroicons/react/24/outline"
 import Footer from "../components/Footer"
 import logo from "../assets/LogoB.png"
-import { Link } from "react-router-dom"
 
 const Layout = () => {
   return (
