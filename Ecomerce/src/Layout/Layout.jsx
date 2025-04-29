@@ -1,5 +1,5 @@
 import React from "react"
-import {Outlet} from "react-router-dom"
+import {Link, Outlet} from "react-router-dom"
 import {
   ShoppingCartIcon,
   MagnifyingGlassIcon,
@@ -40,15 +40,19 @@ const Layout = () => {
 
         <nav className="bg-gray-500 text-white flex gap-2.5 items-center space-x-6 px-6 py-2 pl-20">
           <button className="text-lg">☰</button>
-          <a href="#" className="hover:underline font-[Roboto]">
+          <Link to="/" href="#" className="hover:underline font-[Roboto]">
             Inicio
-          </a>
-          <a href="#" className="hover:underline flex font-[Roboto]">
+          </Link>
+          <Link
+            to="/Ecomerce/products"
+            href="#"
+            className="hover:underline flex font-[Roboto]"
+          >
             Productos{" "}
             <span>
               <ChevronDownIcon className="h-6 w-6 cursor-pointer over:underline" />
             </span>
-          </a>
+          </Link>
           <a href="#" className="hover:underline font-[Roboto]">
             Conócenos
           </a>
