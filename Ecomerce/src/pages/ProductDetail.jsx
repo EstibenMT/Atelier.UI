@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from "react"
 import {ShoppingCartIcon} from "@heroicons/react/24/outline"
 import {useParams} from "react-router-dom"
-import { productService } from "../services/productService"
-import { useDispatch, useSelector } from "react-redux";
-import { postAddProduct } from "../services/CartService"
+import {productService} from "../services/productService"
+import {useDispatch, useSelector} from "react-redux"
+import {postAddProduct} from "../services/CartService"
+import Modal from "../components/Modal"
 
 const ProductDetail = () => {
   const {id} = useParams()
@@ -11,30 +12,30 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
-    const [selectedSize, setSelectedSize] = useState(null)
-    const [selectedColor, setSelectedColor] = useState(null)
+  const [selectedSize, setSelectedSize] = useState(null)
+  const [selectedColor, setSelectedColor] = useState(null)
+  const [showModal, setShowModal] = useState(false)
 
-    const dispatch = useDispatch();
-    const { sessionId } = useSelector(state => state.cart);
-    
+  const dispatch = useDispatch()
+  const {sessionId, quantityProducts} = useSelector((state) => state.cart)
 
-    const handleAddProduct = () => {
-        if (!selectedSize || !selectedColor) {
-            alert("Por favor selecciona talla y color antes de agregar al carrito.")
-            return
-        }
+  const handleAddProduct = () => {
+    if (!selectedSize || !selectedColor) {
+      alert("Por favor selecciona talla y color antes de agregar al carrito.")
+      return
+    }
 
-        // Encontrar variante correcta
-        const variant = product.productVariants.find(
-            (v) => v.size.name === selectedSize && v.color.name === selectedColor
-        )
-        if (!variant) {
-            alert("No se encontró una variante para la combinación seleccionada.")
-            return
-        }
-        dispatch(postAddProduct(id,1, variant.productVariantId, sessionId));
-    };
-    
+    // Encontrar variante correcta
+    const variant = product.productVariants.find(
+      (v) => v.size.name === selectedSize && v.color.name === selectedColor
+    )
+    if (!variant) {
+      alert("No se encontró una variante para la combinación seleccionada.")
+      return
+    }
+    dispatch(postAddProduct(id, 1, variant.productVariantId, sessionId))
+    setShowModal(true)
+  }
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -89,7 +90,7 @@ const ProductDetail = () => {
   }
 
   return (
-      <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Columna izquierda - Imágenes */}
         <div className="md:w-2/3">
@@ -151,7 +152,9 @@ const ProductDetail = () => {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className="w-10 h-10 border rounded-lg flex items-center justify-center hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                  className={`w-10 h-10 border rounded-lg flex items-center justify-center hover:border-blue-500 focus:border-blue-500 focus:outline-none ${
+                    selectedSize === size ? "border-blue-500 bg-blue-50" : ""
+                  }`}
                 >
                   {size}
                 </button>
@@ -169,7 +172,11 @@ const ProductDetail = () => {
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
-                  className="w-8 h-8 rounded-full border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className={`w-8 h-8 rounded-full border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    selectedColor === color
+                      ? "border-blue-500"
+                      : "border-gray-300"
+                  }`}
                   style={{backgroundColor: color.toLowerCase()}}
                   title={color}
                 />
@@ -196,12 +203,23 @@ const ProductDetail = () => {
           </div>
 
           {/* Botón de añadir al carrito */}
-                  <button type="button" onClick={ handleAddProduct } className="w-full bg-blue-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors">
+          <button
+            type="button"
+            onClick={handleAddProduct}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+          >
             <ShoppingCartIcon className="w-5 h-5" />
             Añadir al carrito
           </button>
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        product={product}
+      />
     </div>
   )
 }

@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { saveAddress } from "../data/cartSlice";
 import { postSale } from "../services/SaleService";
 
-
 const ShoppingCart = () => {
     const dispatch = useDispatch();
     const { shoppingCartProducts, quantityProducts, total, iva, subtotal, seccionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);

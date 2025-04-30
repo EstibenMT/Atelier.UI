@@ -113,10 +113,10 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
         setMode("summary");
     };
 
-    const handleEdit = () => {
-        setMode("form");
-        onEditAddress()
-    };
+  const handleEdit = () => {
+    setMode("form")
+    onEditAddress()
+  }
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-md space-y-4">
@@ -310,6 +310,5 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
        </div >
     );
 }
-
 
 export default AddressForm

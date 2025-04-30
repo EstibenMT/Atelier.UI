@@ -4,6 +4,9 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { putdeleteProduct, postAddProduct } from "../services/CartService"
 
+const ShoppingCartCard = ({shoppingCartProduct}) => {
+  const dispatch = useDispatch()
+  const {sessionId} = useSelector((state) => state.cart)
 
 const ShoppingCartCard = ({ shoppingCartProduct}) => {
     const dispatch = useDispatch();

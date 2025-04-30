@@ -1,10 +1,14 @@
 import React from "react"
 import {FaShoppingCart} from "react-icons/fa"
-import { useNavigate } from "react-router-dom"
+import {useNavigate} from "react-router-dom"
+import {useDispatch, useSelector} from "react-redux"
+import {postAddProduct} from "../services/CartService"
 
 const ProductCard = ({product}) => {
   const navigate = useNavigate()
-    
+  const dispatch = useDispatch()
+  const {sessionId} = useSelector((state) => state.cart)
+
   // Función para convertir URL de imgur a URL directa de imagen
   const getImageUrl = (imgurUrl) => {
     if (!imgurUrl) return ""
@@ -26,6 +30,20 @@ const ProductCard = ({product}) => {
 
   const handleProductClick = () => {
     navigate(`/Ecomerce/product/${product.productId}`)
+  }
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation()
+    if (product.productVariants?.[0]?.productVariantId) {
+      dispatch(
+        postAddProduct(
+          product.productId,
+          1,
+          product.productVariants[0].productVariantId,
+          sessionId
+        )
+      )
+    }
   }
 
   return (
@@ -90,7 +108,11 @@ const ProductCard = ({product}) => {
         </div>
 
         {/* Botón de añadir al carrito */}
-              <button type="button" className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors"
+        >
           <FaShoppingCart />
           Añadir al carrito
         </button>
