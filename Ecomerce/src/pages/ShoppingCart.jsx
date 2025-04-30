@@ -3,25 +3,22 @@ import ShoppingCartCard from "../components/ShoppingCartCard";
 import ShoppingCartResume from "../components/ShoppingCartResume";
 import AddressForm from "../components/AddressForm";
 import { useSelector, useDispatch } from "react-redux";
-import { increment, decrement, saveAddress } from "../data/cartSlice";
+import { saveAddress } from "../data/cartSlice";
+import { postSale } from "../services/SaleService";
 
 
 const ShoppingCart = () => {
     const dispatch = useDispatch();
-    const { shoppingCartProducts, quantityProducts, total, iva, subtotal } = useSelector(state => state.cart);
+    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, seccionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);
     const [mode, setMode] = useState("cart");
     const [buttonMode, setButtonMode] = useState("cart");
 
-    const Increment = (index) => {
-        dispatch(increment(index));
-    }
-
-    const Decrement = (index) => {
-        dispatch(decrement(index));
-    } 
-
-    const handleAddressSave = (addressData) => {
-        dispatch(saveAddress(addressData));
+    const handleAddressSave = (address, email, document ) => {
+        dispatch(saveAddress({
+            address: address,
+            email: email,
+            document: document
+        }));
         setButtonMode("pay");
     };
 
@@ -33,8 +30,21 @@ const ShoppingCart = () => {
         setMode("Address");
         setButtonMode("wait");
     };
-    const handlePay = (e) => {
+    const handlePay = async (e) => {
         e.preventDefault();
+        try {
+            const result = await postSale(
+                shoppingCartId,                 
+                seccionId,      
+                email,    
+                document,           
+                total,                
+                address 
+            )
+            console.log("Venta creada:", result)
+        } catch (error) {
+            console.error("Error al procesar la venta:", error)
+        }
         setButtonMode("");
     };
     return (
@@ -48,8 +58,7 @@ const ShoppingCart = () => {
                         {shoppingCartProducts.map((shoppingCartProduct, index) => (
                             <ShoppingCartCard key={index}
                                 shoppingCartProduct={shoppingCartProduct}
-                            onIncrement={() => Increment(index)}
-                            onDecrement={() => Decrement(index)} />
+                            />
                         ))}
                     </form>
                 ) : (

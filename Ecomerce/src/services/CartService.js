@@ -2,9 +2,9 @@ import axios from "axios";
 import { addData } from "../data/cartSlice";
 import { API_CONFIG } from "../config/api.config"
 
-export const fetchCartData = () => async (dispatch) => {
+export const fetchCartData = (sessionId) => async (dispatch) => {
     try {
-        const fetchlink = API_CONFIG.BASE_URL + "/api/shoppingCart/3e2w5yjbkk12zce4mkb3qghz";
+        const fetchlink = API_CONFIG.BASE_URL + "/api/shoppingCart/" + sessionId;
         const response = await axios.get(fetchlink); 
         const data = response.data;
 

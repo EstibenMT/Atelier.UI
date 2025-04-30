@@ -2,10 +2,10 @@ import React from "react"
 import Counter from "../components/Counter"
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { putdeleteProduct } from "../services/CartService"
+import { putdeleteProduct, postAddProduct } from "../services/CartService"
 
 
-const ShoppingCartCard = ({ shoppingCartProduct, onIncrement, onDecrement }) => {
+const ShoppingCartCard = ({ shoppingCartProduct}) => {
     const dispatch = useDispatch();
     const { sessionId } = useSelector(state => state.cart);
 
@@ -14,6 +14,23 @@ const ShoppingCartCard = ({ shoppingCartProduct, onIncrement, onDecrement }) => 
             shoppingCartProduct.quantity,
             shoppingCartProduct.product.productVariants[0]?.productVariantId,
             sessionId));
+    };
+    const handleIncrement = () => {
+        dispatch(postAddProduct(
+            shoppingCartProduct.productId,
+            1,
+            shoppingCartProduct.product.productVariants[0]?.productVariantId,
+            sessionId
+        ));
+    };
+
+    const handleDecrement = () => {
+        dispatch(postAddProduct(
+            shoppingCartProduct.productId,
+            -1,
+            shoppingCartProduct.product.productVariants[0]?.productVariantId,
+            sessionId
+        ));
     };
     const getImageUrl = (imgurUrl) => {
         if (!imgurUrl) return ""
@@ -44,7 +61,7 @@ const ShoppingCartCard = ({ shoppingCartProduct, onIncrement, onDecrement }) => 
                 </div>
             </div>
             <div className="text-right">
-                <Counter value={shoppingCartProduct.quantity} onIncrement={onIncrement} onDecrement={onDecrement} />
+                <Counter value={shoppingCartProduct.quantity} onIncrement={handleIncrement} onDecrement={handleDecrement} />
                 <p className="font-semibold">${shoppingCartProduct.product.price}</p>
                 <p className="text-green-600 text-sm">Exento de IVA</p>
             </div>
