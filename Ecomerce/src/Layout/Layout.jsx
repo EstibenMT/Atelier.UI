@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {Link, Outlet} from "react-router-dom"
 import {
   ShoppingCartIcon,
@@ -7,8 +7,19 @@ import {
 } from "@heroicons/react/24/outline"
 import Footer from "../components/Footer"
 import logo from "../assets/LogoB.png"
+import {useSelector, useDispatch} from "react-redux"
+import {fetchCartData} from "../services/CartService"
 
 const Layout = () => {
+  const dispatch = useDispatch()
+  const {quantityProducts, sessionId} = useSelector((state) => state.cart)
+
+  useEffect(() => {
+    if (sessionId) {
+      dispatch(fetchCartData())
+    }
+  }, [dispatch, sessionId])
+
   return (
     <div>
       <header className="">
@@ -35,9 +46,14 @@ const Layout = () => {
               Iniciar sesion
             </button>
             <Link to="/Ecomerce/ShoppingCart">
-            <div>
-            <ShoppingCartIcon className="h-6 w-6 cursor-pointer mt-2" />
-            </div>
+              <div className="relative">
+                <ShoppingCartIcon className="h-6 w-6 cursor-pointer mt-2" />
+                {quantityProducts > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {quantityProducts}
+                  </span>
+                )}
+              </div>
             </Link>
           </div>
         </div>
