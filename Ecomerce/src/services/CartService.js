@@ -35,7 +35,7 @@ export const postAddProduct =
   (productId, quantity = 1, productVariantId, sessionId) =>
   async (dispatch) => {
     const payload = {
-      userId: 0,
+      userId: null,
       sessionId: sessionId,
       productId: parseInt(productId),
       quantity: quantity,
