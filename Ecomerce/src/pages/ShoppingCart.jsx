@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ShoppingCartCard from "../components/ShoppingCartCard";
 import ShoppingCartResume from "../components/ShoppingCartResume";
 import AddressForm from "../components/AddressForm";
 import { useSelector, useDispatch } from "react-redux";
 import { saveAddress } from "../data/cartSlice";
 import { postSale } from "../services/SaleService";
+import { fetchCartData } from "../services/CartService";
 
 const ShoppingCart = () => {
     const dispatch = useDispatch();
-    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, seccionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);
+    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, sessionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);
     const [mode, setMode] = useState("cart");
     const [buttonMode, setButtonMode] = useState("cart");
+
+    useEffect(() => {
+        if (sessionId) {
+            dispatch(fetchCartData(sessionId));
+        }
+    }, [dispatch, sessionId]);
 
     const handleAddressSave = (address, email, document ) => {
         dispatch(saveAddress({
@@ -34,7 +41,7 @@ const ShoppingCart = () => {
         try {
             const result = await postSale(
                 shoppingCartId,                 
-                seccionId,      
+                sessionId,      
                 email,    
                 document,           
                 total,                
@@ -45,6 +52,7 @@ const ShoppingCart = () => {
             console.error("Error al procesar la venta:", error)
         }
         setButtonMode("");
+        window.location.href = "/Ecomerce/Pagos"
     };
     return (
         <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-100">
