@@ -3,12 +3,15 @@ import { getSessionId } from "../data/Seccion";
 
 const initialState = {
     sessionId: getSessionId(),
+    shoppingCartId:0,
     shoppingCartProducts: [], 
     quantityProducts : 0,
     total: 0,
     iva: 0,
     subtotal: 0,
-    address: [],
+    address: null,
+    email: "",
+    document:"",
 };
 
 const cartSlice = createSlice({
@@ -17,6 +20,7 @@ const cartSlice = createSlice({
     reducers: {
         addData: (state, action) => {
             const { data } = action.payload;
+            state.shoppingCartId = data.shoppingCartId;
             state.shoppingCartProducts = data.shoppingCartProducts;
             state.total = data.total;
             state.iva = data.tax;
@@ -27,25 +31,17 @@ const cartSlice = createSlice({
             const { product } = action.payload;
             state.shoppingCartProducts.push({ ...product, quantity: 1 });
         },
-        increment: (state, action) => {
-            const index = action.payload;
-            state.shoppingCartProducts[index].quantity += 1;
-        },
-        decrement: (state, action) => {
-            const index = action.payload;
-            if (state.shoppingCartProducts[index].quantity > 1) {
-                state.shoppingCartProducts[index].quantity -= 1;
-            }
-        },
         saveAddress: (state, action) => {
-            state.address = action.payload;
+            const { address, email, document } = action.payload;
+            state.address = address;
+            state.email = email;
+            state.document = document;
         },
-        clearCart: (state) => {
-            state.shoppingCartProducts = [];
-            state.address = null;
+        clearCart: () => {
+            return { ...initialState, sessionId: getSessionId() };
         }
     }
 });
 
-export const { addData, addProduct, increment, decrement, saveAddress, clearCart } = cartSlice.actions;
+export const { addData, addProduct, saveAddress, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
