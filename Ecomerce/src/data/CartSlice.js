@@ -3,6 +3,7 @@ import { getSessionId } from "../data/Seccion";
 
 const initialState = {
     sessionId: getSessionId(),
+    saleId:0,
     shoppingCartId:0,
     shoppingCartProducts: [], 
     quantityProducts : 0,
@@ -31,6 +32,10 @@ const cartSlice = createSlice({
             const { product } = action.payload;
             state.shoppingCartProducts.push({ ...product, quantity: 1 });
         },
+        addSaleId: (state, action) => {
+            const {saleId } = action.payload;
+            state.saleId = saleId;
+        },
         saveAddress: (state, action) => {
             const { address, email, document } = action.payload;
             state.address = address;
@@ -43,5 +48,5 @@ const cartSlice = createSlice({
     }
 });
 
-export const { addData, addProduct, saveAddress, clearCart } = cartSlice.actions;
+export const { addData, addProduct, saveAddress, clearCart, addSaleId } = cartSlice.actions;
 export default cartSlice.reducer;

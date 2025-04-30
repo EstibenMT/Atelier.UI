@@ -1,5 +1,5 @@
 import axios from "axios"
-import {addData, clearCart} from "../data/CartSlice"
+import {addData} from "../data/CartSlice"
 import {API_CONFIG} from "../config/api.config"
 
 export const fetchCartData = (sessionId) => async (dispatch) => {
@@ -8,26 +8,10 @@ export const fetchCartData = (sessionId) => async (dispatch) => {
     const response = await axios.get(fetchlink)
     const data = response.data
 
-    // Si no hay productos en el carrito, limpiamos el estado
-    if (!data.shoppingCartProducts || data.shoppingCartProducts.length === 0) {
-      dispatch(clearCart())
-    } else {
-      dispatch(addData({data}))
-    }
+    dispatch(addData({data}))
+    
   } catch (error) {
     console.error("Error al obtener el carrito:", error)
-    // Si hay un error, limpiamos el carrito
-    dispatch(clearCart())
-  }
-}
-
-export const clearShoppingCart = (sessionId) => async (dispatch) => {
-  try {
-    const fetchlink = `${API_CONFIG.BASE_URL}/shoppingCart/clear/${sessionId}`
-    await axios.delete(fetchlink)
-    dispatch(clearCart())
-  } catch (error) {
-    console.error("Error al limpiar el carrito:", error)
   }
 }
 

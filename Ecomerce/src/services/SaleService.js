@@ -14,10 +14,24 @@ export const postSale = async (shoppingCartId,sessionId,email,document,total,add
           address: address 
     };
 
-    const response = await axios.post(`${API_URL}/sale`, payload)
-    return response.data
+      const response = await axios.post(`${API_URL}/sale`, payload)
+      console.log(response);
+      return response
   } catch (error) {
     console.error("Error al crear la venta:", error)
     throw error
   }
+}
+
+export const getSale = async (saleId, sessionId) => {
+    try {
+        const fetchlink = `${API_URL}/sale/${saleId}/${sessionId}`
+        const response = await axios.get(fetchlink)
+        const data = response.data
+        
+        return data
+
+    } catch (error) {
+        console.error("Error al obtener el informacion de pago:", error)
+    }
 }
