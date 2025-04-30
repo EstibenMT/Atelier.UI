@@ -34,7 +34,11 @@ const Layout = () => {
             <button className=" bg-black p-1.5 rounded-md border border-white font-semibold px-4 cursor-pointer">
               Iniciar sesion
             </button>
+            <Link to="/Ecomerce/ShoppingCart">
+            <div>
             <ShoppingCartIcon className="h-6 w-6 cursor-pointer mt-2" />
+            </div>
+            </Link>
           </div>
         </div>
 

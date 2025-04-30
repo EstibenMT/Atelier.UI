@@ -153,3 +153,6 @@ Desktop.ini
 .turbo/
 
 
+/Ecomerce/src/data/CartThunk.js
+/Ecomerce/src/data/Store.js
+/Ecomerce/src/data/CartService.js
