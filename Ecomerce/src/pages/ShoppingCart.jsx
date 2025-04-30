@@ -3,13 +3,15 @@ import ShoppingCartCard from "../components/ShoppingCartCard";
 import ShoppingCartResume from "../components/ShoppingCartResume";
 import AddressForm from "../components/AddressForm";
 import { useSelector, useDispatch } from "react-redux";
-import { saveAddress } from "../data/cartSlice";
-import { postSale } from "../services/SaleService";
+import { saveAddress,addSaleId } from "../data/cartSlice";
+import { postSale} from "../services/SaleService";
 import { fetchCartData } from "../services/CartService";
+import { useNavigate } from "react-router-dom";
 
 const ShoppingCart = () => {
     const dispatch = useDispatch();
-    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, sessionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);
+    const navigate = useNavigate();
+    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, sessionId, shoppingCartId, address, email, document} = useSelector(state => state.cart);
     const [mode, setMode] = useState("cart");
     const [buttonMode, setButtonMode] = useState("cart");
 
@@ -47,12 +49,15 @@ const ShoppingCart = () => {
                 total,                
                 address 
             )
-            console.log("Venta creada:", result)
+            const saleId = result.data.saleId;
+            await dispatch(addSaleId({ saleId }));
+            navigate("/Ecomerce/Pagos");
+            
         } catch (error) {
             console.error("Error al procesar la venta:", error)
         }
         setButtonMode("");
-        window.location.href = "/Ecomerce/Pagos"
+        
     };
     return (
         <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-100">

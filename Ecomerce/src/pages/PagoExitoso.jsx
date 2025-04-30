@@ -1,14 +1,35 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector  } from "react-redux";
 import {LockClosedIcon} from "@heroicons/react/24/solid"
-import {useSelector} from "react-redux"
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { getSale } from "../services/SaleService";
+import { clearCart } from "../data/cartSlice";
 
 const PagoExitoso = () => {
-  const navigate = useNavigate()
-  const {total, iva, subtotal, quantityProducts, shoppingCartProducts} =
-    useSelector((state) => state.cart)
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const [data, setData] = useState(null);
+    const { saleId, sessionId } = useSelector((state) => state.cart)
+    useEffect(() => {
+        console.log("Venta creada con:", saleId);
+        const fetchSaleData = async () => {
+            try {
+                const response = await getSale(saleId,sessionId);
+                setData(response);
+                dispatch(clearCart());
+            } catch (error) {
+                console.error("Error fetching sale data:", error);
+            }
+        };
+        fetchSaleData();
+    }, [ saleId,sessionId]);
 
-  return (
+    if (!data) {
+        return <div className="text-center py-10 text-gray-500">Cargando datos de la compra...</div>;
+    }
+
+    return (
+
     <div className="bg-gray-100 min-h-screen">
       {/* Banner verde de éxito */}
       <div className="bg-green-500 text-white py-8 mb-8 shadow-lg">
@@ -33,7 +54,7 @@ const PagoExitoso = () => {
           <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
             <p>
               <span className="font-semibold">ID de Pago:</span>{" "}
-              {Math.floor(Math.random() * 1000000000)}
+                          {data.saleId}
             </p>
             <p>
               <span className="font-semibold">Fecha y Hora:</span>{" "}
@@ -41,10 +62,7 @@ const PagoExitoso = () => {
             </p>
             <p>
               <span className="font-semibold">Valor:</span>{" "}
-              {total.toLocaleString("es-CO", {
-                style: "currency",
-                currency: "COP",
-              })}
+              {}
             </p>
             <p>
               <span className="font-semibold">Estado:</span>{" "}
@@ -64,44 +82,19 @@ const PagoExitoso = () => {
 
           {/* Productos */}
           <div className="border-t border-b py-4 space-y-4">
-            {shoppingCartProducts.map((item) => (
-              <div key={item.productId} className="flex justify-between">
-                <div>
-                  <p className="font-semibold">{item.product.name}</p>
-                  <p className="text-xs text-gray-500">
-                    Referencia:{" "}
-                    {item.product.productVariants[0]?.productVariantId}
-                  </p>
-                  <p className="text-xs text-gray-500">Envío: Incluido</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold">
-                    ${item.product.price.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Cantidad: {item.quantity}
-                  </p>
-                </div>
-              </div>
-            ))}
+            {}
           </div>
 
           {/* Totales */}
           <div className="bg-blue-50 p-4 mt-4 rounded-lg text-sm">
-            <p>{quantityProducts} productos en total</p>
+            <p>{} productos en total</p>
             <p>
               Sub-total:{" "}
-              {subtotal.toLocaleString("es-CO", {
-                style: "currency",
-                currency: "COP",
-              })}
+              {}
             </p>
             <p>
               IVA:{" "}
-              {iva.toLocaleString("es-CO", {
-                style: "currency",
-                currency: "COP",
-              })}
+              {}
             </p>
           </div>
 
@@ -111,10 +104,7 @@ const PagoExitoso = () => {
               <p className="text-lg font-bold">
                 Total:{" "}
                 <span className="text-blue-600">
-                  {total.toLocaleString("es-CO", {
-                    style: "currency",
-                    currency: "COP",
-                  })}
+                  {}
                 </span>
               </p>
             </div>
