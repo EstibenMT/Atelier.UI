@@ -1,13 +1,18 @@
 import React, {useState, useEffect} from "react"
 import {categoryService} from "../services/categoryService"
+import {productService} from "../services/productService"
 
 const Sidebar = ({onFilterChange}) => {
   const [categories, setCategories] = useState([])
+  const [brands, setBrands] = useState([])
   const [minPrice, setMinPrice] = useState("")
   const [maxPrice, setMaxPrice] = useState("")
   const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedBrands, setSelectedBrands] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingBrands, setIsLoadingBrands] = useState(true)
   const [error, setError] = useState(null)
+  const [brandError, setBrandError] = useState(null)
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -35,8 +40,33 @@ const Sidebar = ({onFilterChange}) => {
   }, [])
 
   useEffect(() => {
+    const loadBrands = async () => {
+      try {
+        setIsLoadingBrands(true)
+        setBrandError(null)
+        const data = await productService.getAllBrands()
+        console.log("Marcas cargadas:", data)
+        if (Array.isArray(data)) {
+          setBrands(data)
+        } else {
+          console.error("Los datos recibidos no son un array:", data)
+          setBrands([])
+        }
+      } catch (error) {
+        console.error("Error al cargar las marcas:", error)
+        setBrandError("Error al cargar las marcas")
+        setBrands([])
+      } finally {
+        setIsLoadingBrands(false)
+      }
+    }
+
+    loadBrands()
+  }, [])
+
+  useEffect(() => {
     const filters = {
-      brandIds: [],
+      brandIds: selectedBrands,
       categoryIds: selectedCategories,
       productName: "",
       minPrice: minPrice ? Number(minPrice) : null,
@@ -44,7 +74,7 @@ const Sidebar = ({onFilterChange}) => {
       sortBy: null,
     }
     onFilterChange(filters)
-  }, [selectedCategories, minPrice, maxPrice])
+  }, [selectedCategories, selectedBrands, minPrice, maxPrice])
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategories((prev) => {
@@ -52,6 +82,16 @@ const Sidebar = ({onFilterChange}) => {
         return prev.filter((id) => id !== categoryId)
       } else {
         return [...prev, categoryId]
+      }
+    })
+  }
+
+  const handleBrandChange = (brandId) => {
+    setSelectedBrands((prev) => {
+      if (prev.includes(brandId)) {
+        return prev.filter((id) => id !== brandId)
+      } else {
+        return [...prev, brandId]
       }
     })
   }
@@ -75,6 +115,29 @@ const Sidebar = ({onFilterChange}) => {
           onChange={() => handleCategoryChange(category.categoryId)}
         />{" "}
         {category.name} ({category.productCount})
+      </li>
+    ))
+  }
+
+  const renderBrands = () => {
+    if (!Array.isArray(brands)) {
+      return (
+        <li className="text-gray-500">Error en el formato de las marcas</li>
+      )
+    }
+
+    if (brands.length === 0) {
+      return <li className="text-gray-500">No hay marcas disponibles</li>
+    }
+
+    return brands.map((brand) => (
+      <li key={brand.brandId}>
+        <input
+          type="checkbox"
+          checked={selectedBrands.includes(brand.brandId)}
+          onChange={() => handleBrandChange(brand.brandId)}
+        />{" "}
+        {brand.name} ({brand.productCount})
       </li>
     ))
   }
@@ -129,28 +192,20 @@ const Sidebar = ({onFilterChange}) => {
 
       <div>
         <h3 className="font-medium text-gray-700 mb-2">Comercializador</h3>
-        <ul className="space-y-1 text-sm text-gray-600">
-          <li>
-            <input type="checkbox" /> Alona (354)
-          </li>
-          <li>
-            <input type="checkbox" /> Raque (1.239)
-          </li>
-          <li>
-            <input type="checkbox" /> Americano (5.400)
-          </li>
-          <li>
-            <input type="checkbox" /> Adidas (800)
-          </li>
-          <li>
-            <input type="checkbox" /> Nike (0)
-          </li>
-          <li>
-            <a href="#" className="text-blue-600 hover:underline">
-              Ver todo
-            </a>
-          </li>
-        </ul>
+        {isLoadingBrands ? (
+          <p className="text-sm text-gray-600">Cargando marcas...</p>
+        ) : brandError ? (
+          <p className="text-sm text-red-600">{brandError}</p>
+        ) : (
+          <ul className="space-y-1 text-sm text-gray-600">
+            {renderBrands()}
+            <li>
+              <a href="#" className="text-blue-600 hover:underline">
+                Ver todo
+              </a>
+            </li>
+          </ul>
+        )}
       </div>
     </aside>
   )
