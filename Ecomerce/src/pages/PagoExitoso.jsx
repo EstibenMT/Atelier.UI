@@ -8,7 +8,7 @@ import { clearCart } from "../data/cartSlice";
 const PagoExitoso = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
-    const [data, setData] = useState(null);
+    const [data, setData] = useState();
     const { saleId, sessionId } = useSelector((state) => state.cart)
     useEffect(() => {
         console.log("Venta creada con:", saleId);
@@ -16,7 +16,9 @@ const PagoExitoso = () => {
             try {
                 const response = await getSale(saleId,sessionId);
                 setData(response);
-                dispatch(clearCart());
+                setTimeout(() => {
+                    dispatch(clearCart());
+                }, 0);
             } catch (error) {
                 console.error("Error fetching sale data:", error);
             }
@@ -35,7 +37,7 @@ const PagoExitoso = () => {
     }
 
     const { shoppingCart } = data
-    const products = shoppingCart.shoppingCartProducts || []
+    const products = shoppingCart?.shoppingCartProducts || []
 
     return (
         <div className="bg-gray-100 min-h-screen">
