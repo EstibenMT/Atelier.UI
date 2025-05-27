@@ -33,5 +33,6 @@ export const getSale = async (saleId, sessionId) => {
 
     } catch (error) {
         console.error("Error al obtener el informacion de pago:", error)
+        throw error;
     }
 }

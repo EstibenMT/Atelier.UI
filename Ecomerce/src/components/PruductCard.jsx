@@ -9,13 +9,6 @@ const ProductCard = ({product}) => {
   const dispatch = useDispatch()
   const {sessionId} = useSelector((state) => state.cart)
 
-  // Función para convertir URL de imgur a URL directa de imagen
-  const getImageUrl = (imgurUrl) => {
-    if (!imgurUrl) return ""
-    const imageId = imgurUrl.split("/").pop()
-    return `https://i.imgur.com/${imageId}.jpg`
-  }
-
   // Validar que el producto exista
   if (!product) {
     return <div>Producto no disponible</div>
@@ -59,7 +52,7 @@ const ProductCard = ({product}) => {
 
       <div className="flex justify-center items-center p-4">
         <img
-          src={getImageUrl(imageUrl)}
+          src={imageUrl}
           alt={product.name || "Producto"}
           className="h-48 object-cover"
         />

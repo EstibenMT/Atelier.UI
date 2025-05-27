@@ -18,7 +18,7 @@ const Layout = () => {
   const location = useLocation()
 
   useEffect(() => {
-    if (sessionId) {
+      if (sessionId && sessionId.trim() !== "") {
       dispatch(fetchCartData())
     }
   }, [dispatch, sessionId])

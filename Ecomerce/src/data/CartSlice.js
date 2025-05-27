@@ -43,6 +43,7 @@ const cartSlice = createSlice({
             state.document = document;
         },
         clearCart: () => {
+            localStorage.removeItem('sessionId');
             return { ...initialState, sessionId: getSessionId() };
         }
     }
