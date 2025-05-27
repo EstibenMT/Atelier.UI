@@ -3,7 +3,6 @@ import {Link, Outlet, useNavigate, useLocation} from "react-router-dom"
 import {
   ShoppingCartIcon,
   MagnifyingGlassIcon,
-  ChevronDownIcon,
 } from "@heroicons/react/24/outline"
 import Footer from "../components/Footer"
 import logo from "../assets/LogoB.png"
@@ -94,10 +93,7 @@ const Layout = () => {
             href="#"
             className="hover:underline flex font-[Roboto]"
           >
-            Productos{" "}
-            <span>
-              <ChevronDownIcon className="h-6 w-6 cursor-pointer over:underline" />
-            </span>
+            Productos <span></span>
           </Link>
           <a href="#" className="hover:underline font-[Roboto]">
             Conócenos
