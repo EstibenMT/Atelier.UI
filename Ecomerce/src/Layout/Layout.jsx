@@ -1,5 +1,5 @@
-import React, {useEffect} from "react"
-import {Link, Outlet} from "react-router-dom"
+import React, {useEffect, useState} from "react"
+import {Link, Outlet, useNavigate, useLocation} from "react-router-dom"
 import {
   ShoppingCartIcon,
   MagnifyingGlassIcon,
@@ -13,12 +13,33 @@ import {fetchCartData} from "../services/CartService"
 const Layout = () => {
   const dispatch = useDispatch()
   const {quantityProducts, sessionId} = useSelector((state) => state.cart)
+  const [searchTerm, setSearchTerm] = useState("")
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     if (sessionId) {
       dispatch(fetchCartData())
     }
   }, [dispatch, sessionId])
+
+  // Actualiza el query param 'search' en la URL y navega a /Ecomerce/products
+  const handleSearchChange = (e) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    if (value.trim() !== "") {
+      navigate(`/Ecomerce/products?search=${encodeURIComponent(value)}`)
+    } else if (location.pathname.startsWith("/Ecomerce/products")) {
+      navigate(`/Ecomerce/products`)
+    }
+  }
+
+  const handleSearchClick = (e) => {
+    e.preventDefault()
+    if (searchTerm.trim() !== "") {
+      navigate(`/Ecomerce/products?search=${encodeURIComponent(searchTerm)}`)
+    }
+  }
 
   return (
     <div>
@@ -32,8 +53,13 @@ const Layout = () => {
               type="text"
               placeholder="   ¿Qué producto estás buscando hoy?"
               className="w-full p-1.5 text-black outline-none font-[Roboto]"
+              value={searchTerm}
+              onChange={handleSearchChange}
             />
-            <button className="bg-yellow-500 p-1.5 cursor-pointer">
+            <button
+              className="bg-yellow-500 p-1.5 cursor-pointer"
+              onClick={handleSearchClick}
+            >
               <MagnifyingGlassIcon className="h-6 w-6 text-black" />
             </button>
           </div>

@@ -3,7 +3,7 @@ export const API_CONFIG = {
   ENDPOINTS: {
     PRODUCTS: "/product/featured",
     CATEGORIES: "/categories",
-    BRANDS: "/brands",
+    BRANDS: "/brand",
     USERS: "/users",
     AUTH: "/auth",
   },

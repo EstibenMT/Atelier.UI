@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react"
 import Sidebar from "../components/Sidebar"
 import ProductCard from "../components/PruductCard"
 import {productService} from "../services/productService"
+import {useLocation} from "react-router-dom"
 
 const Products = () => {
   const [products, setProducts] = useState([])
@@ -13,19 +14,40 @@ const Products = () => {
     maxPrice: null,
     sortBy: null,
   })
+  const location = useLocation()
 
-  const fetchProducts = async () => {
-    try {
-      const data = await productService.getFilteredProducts(filters)
-      setProducts(data)
-    } catch (error) {
-      console.error("Error al obtener productos:", error)
-    }
+  // Función para obtener el valor de 'search' del query param
+  const getSearchParam = () => {
+    const params = new URLSearchParams(location.search)
+    return params.get("search") || ""
   }
 
   useEffect(() => {
-    fetchProducts()
-  }, [filters])
+    const searchTerm = getSearchParam()
+    if (searchTerm.trim() !== "") {
+      // Si hay búsqueda, usar el servicio de búsqueda
+      const fetchSearch = async () => {
+        try {
+          const data = await productService.searchProductsByName(searchTerm)
+          setProducts(data)
+        } catch (error) {
+          setProducts([])
+        }
+      }
+      fetchSearch()
+    } else {
+      // Si no hay búsqueda, usar el filtrado normal
+      const fetchProducts = async () => {
+        try {
+          const data = await productService.getFilteredProducts(filters)
+          setProducts(data)
+        } catch (error) {
+          setProducts([])
+        }
+      }
+      fetchProducts()
+    }
+  }, [location.search, filters])
 
   const handleFilterChange = (newFilters) => {
     setFilters((prevFilters) => ({
