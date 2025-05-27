@@ -17,7 +17,7 @@ const ProductDetail = () => {
   const [showModal, setShowModal] = useState(false)
 
   const dispatch = useDispatch()
-  const {sessionId, quantityProducts} = useSelector((state) => state.cart)
+  const {sessionId} = useSelector((state) => state.cart)
 
   const handleAddProduct = () => {
     if (!selectedSize || !selectedColor) {
@@ -78,13 +78,6 @@ const ProductDetail = () => {
     )
   }
 
-  // Función para convertir URL de imgur a URL directa de imagen
-  const getImageUrl = (imgurUrl) => {
-    if (!imgurUrl) return ""
-    const imageId = imgurUrl.split("/").pop()
-    return `https://i.imgur.com/${imageId}.jpg`
-  }
-
   const handleThumbnailClick = (index) => {
     setSelectedImage(index)
   }
@@ -96,9 +89,9 @@ const ProductDetail = () => {
         <div className="md:w-2/3">
           <div className="mb-4">
             <img
-              src={getImageUrl(
+              src={
                 product.productImages?.[selectedImage]?.imageUrl
-              )}
+              }
               alt={product.name}
               className="w-full h-auto max-h-[600px] object-contain rounded-lg bg-gray-50"
             />
@@ -115,7 +108,7 @@ const ProductDetail = () => {
                 } hover:border-blue-300 rounded-lg transition-all duration-200`}
               >
                 <img
-                  src={getImageUrl(image.imageUrl)}
+                        src={image.imageUrl}
                   alt={`${product.name} - ${index + 1}`}
                   className="w-20 h-20 object-contain rounded-lg bg-gray-50"
                 />
