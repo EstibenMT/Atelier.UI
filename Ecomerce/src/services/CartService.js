@@ -41,7 +41,6 @@ export const postAddProduct =
     }
   }
 
-// Eliminar producto del carrito
 export const putdeleteProduct =
   (productId, quantity, productVariantId, sessionId) => async (dispatch) => {
     const payload = {
@@ -67,20 +66,12 @@ export const putdeleteProduct =
       })
 
       const data = response.data
-      console.log("Respuesta del servidor:", data)
-
-      if (
-        !data.shoppingCartProducts ||
-        data.shoppingCartProducts.length === 0
-      ) {
-        dispatch(clearCart())
-      } else {
-        dispatch(addData({data}))
-      }
+        console.log("Respuesta del servidor:", data)
+        dispatch(addData({ data }))
     } catch (error) {
       console.error(
         "Error al eliminar el producto:",
-        error.response ? error.response.data : error.message
-      )
+          error.response ? error.response.data : error.message
+        )
     }
   }
