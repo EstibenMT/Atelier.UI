@@ -33,7 +33,7 @@ const ShoppingCartCard = ({ shoppingCartProduct}) => {
     };
     
     return (
-        <div className="flex justify-between p-4 border-b">
+        <div className="flex justify-between p-4 border-b md:col-span-2 bg-white rounded-lg shadow-sm ">
             <div className="flex gap-10">
                 <img
                     src={shoppingCartProduct.product.productImages[0]?.imageUrl}
@@ -55,7 +55,12 @@ const ShoppingCartCard = ({ shoppingCartProduct}) => {
                 </div>
             </div>
             <div className="text-right">
-                <Counter value={shoppingCartProduct.quantity} onIncrement={handleIncrement} onDecrement={handleDecrement} />
+                <Counter
+                    value={shoppingCartProduct.quantity}
+                    onIncrement={handleIncrement}
+                    onDecrement={handleDecrement}
+                    max={shoppingCartProduct.product.productVariants[0]?.stock}
+                />
                 <p className="font-semibold">${shoppingCartProduct.product.price}</p>
                 <p className="text-green-600 text-sm">Exento de IVA</p>
             </div>

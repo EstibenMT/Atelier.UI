@@ -3,7 +3,7 @@ import ShoppingCartCard from "../components/ShoppingCartCard";
 import ShoppingCartResume from "../components/ShoppingCartResume";
 import AddressForm from "../components/AddressForm";
 import { useSelector, useDispatch } from "react-redux";
-import { saveAddress,addSaleId } from "../data/cartSlice";
+import { saveAddress,addSaleId } from "../data/CartSlice";
 import { postSale} from "../services/SaleService";
 import { fetchCartData } from "../services/CartService";
 import { useNavigate } from "react-router-dom";
@@ -61,9 +61,9 @@ const ShoppingCart = () => {
         
     };
     return (
-        <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-100 h-128">
+        <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-100 flex flex-col min-h-128">
             {quantityProducts === 0 ? (
-                <div className="col-span-3 flex flex-col items-center justify-center bg-white p-10 rounded shadow-sm text-center">
+                <div className="col-span-3 flex flex-col items-center justify-center bg-white p-10 rounded shadow-sm text-center h-70">
                     <GiShoppingCart className="w-20 h-20 mb-4 text-gray-400 rotate-350" />
                     <h2 className="text-lg font-medium text-gray-700">Tu carrito de compras esta vacio</h2>
                     <p className="text-sm text-gray-500">
@@ -75,18 +75,20 @@ const ShoppingCart = () => {
                 </div>
             ) : (
                 <>
-                        <div className="md:col-span-2 bg-white rounded-lg shadow-sm">
+                        <div className="md:col-span-2">
                             {mode === "cart" ? (
-                                <form className="space-y-4">
-                                    <h1 className="font-semibold text-lg p-4 border-b">
-                                        Carrito de compras ({quantityProducts}) articulos
-                                    </h1>
-                                    {shoppingCartProducts.map((shoppingCartProduct, index) => (
-                                        <ShoppingCartCard key={index}
-                                            shoppingCartProduct={shoppingCartProduct}
-                                        />
-                                    ))}
-                                </form>
+                                <div className="bg-white rounded-lg shadow-sm bg-white rounded-lg shadow-sm">
+                                    <form >
+                                        <h1 className="font-semibold text-lg p-4 border-b">
+                                            Carrito de compras ({quantityProducts}) articulos
+                                        </h1>
+                                        {shoppingCartProducts.map((shoppingCartProduct, index) => (
+                                            <ShoppingCartCard key={index}
+                                                shoppingCartProduct={shoppingCartProduct}
+                                            />
+                                        ))}
+                                    </form>
+                                </div>
                                 
                             ) : (
                                     <AddressForm onSaveAddress={handleAddressSave} onEditAddress={handleAddressEdit} />
