@@ -1,11 +1,25 @@
 import React from "react";
 
-function Counter({ value, onIncrement, onDecrement }) {
+function Counter({ value, onIncrement, onDecrement, max }) {
     return (
-        <div className="flex items-center gap-2 mb-2">
-            <button type="button" variant="outline" size="sm" onClick={onDecrement}>-</button>
-            <p>{value}</p>
-            <button type="button" variant="outline" size="sm" onClick={onIncrement}>+</button>
+        <div className="flex items-center border border-grry-300 rounded w-fit overflow-hidden test-sm">
+            <button
+                type="button"
+                className="px-3 py-1 hover:bg-gray-100 border-r border-gray-300"
+                onClick={onDecrement}
+                disabled={value <= 1}
+            >
+                -
+            </button>
+            <div className="px-4 py-1">{value}</div>
+            <button
+                type="button"
+                className="px-3 py-1 hover:bg-gray-100 border-l border-gray-300"
+                onClick={onIncrement}
+                disabled={value >= max}
+            >
+                +
+            </button>
         </div>
     );
 }
