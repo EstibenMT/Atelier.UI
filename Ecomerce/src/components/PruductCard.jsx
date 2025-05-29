@@ -1,5 +1,4 @@
 import React from "react"
-import {FaShoppingCart} from "react-icons/fa"
 import {useNavigate} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
 import {postAddProduct} from "../services/CartService"
@@ -41,7 +40,7 @@ const ProductCard = ({product}) => {
 
   return (
     <div
-      className="bg-white rounded-lg shadow-md overflow-hidden w-64 cursor-pointer"
+      className="bg-white rounded-lg m-2 shadow-md overflow-hidden w-64 cursor-pointer"
       onClick={handleProductClick}
     >
       <div className="p-2">
@@ -101,14 +100,14 @@ const ProductCard = ({product}) => {
         </div>
 
         {/* Botón de añadir al carrito */}
-        <button
+        {/* <button
           type="button"
           onClick={handleAddToCart}
           className="mt-4 w-full flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded hover:bg-blue-600 hover:text-white transition-colors"
         >
           <FaShoppingCart />
           Añadir al carrito
-        </button>
+        </button> */}
       </div>
     </div>
   )
