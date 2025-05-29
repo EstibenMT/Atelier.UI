@@ -23,6 +23,11 @@ const Products = () => {
   }
 
   useEffect(() => {
+    // Si viene del autocompletado, usar los productos filtrados del estado
+    if (location.state && location.state.filteredProducts) {
+      setProducts(location.state.filteredProducts)
+      return
+    }
     const searchTerm = getSearchParam()
     if (searchTerm.trim() !== "") {
       // Si hay búsqueda, usar el servicio de búsqueda
@@ -47,7 +52,7 @@ const Products = () => {
       }
       fetchProducts()
     }
-  }, [location.search, filters])
+  }, [location.search, location.state, filters])
 
   const handleFilterChange = (newFilters) => {
     setFilters((prevFilters) => ({
