@@ -3,7 +3,7 @@ import { CiLocationOn } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { getCountries, getStates, getCities, getStreetTypes } from "../services/LocationService";
  
-const AddressForm = ({ onSaveAddress, onEditAddress }) => {
+const AddressForm = ({ onSaveAddress, onEditAddress}) => {
     const [mode, setMode] = useState("form")
     const [email, setEmail] = useState("");
     const [document, setDocument] = useState("");
@@ -325,16 +325,6 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 {errors.complement && <p className="text-red-500 text-sm mt-1">{errors.complement}</p>}
                             </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium">Punto de referencia (opcional)</label>
-                        <input
-                            type="text"
-                            name="referencia"
-                            onChange={handleChangeAddress}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
                     </div>
 
                     <button
