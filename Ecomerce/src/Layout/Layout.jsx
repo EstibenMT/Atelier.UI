@@ -1,43 +1,60 @@
 import React, {useEffect, useState} from "react"
-import {Link, Outlet, useNavigate, useLocation} from "react-router-dom"
+import {Link, Outlet, useNavigate} from "react-router-dom"
 import {
   ShoppingCartIcon,
   MagnifyingGlassIcon,
-  ChevronDownIcon,
 } from "@heroicons/react/24/outline"
 import Footer from "../components/Footer"
 import logo from "../assets/LogoB.png"
 import {useSelector, useDispatch} from "react-redux"
 import {fetchCartData} from "../services/CartService"
+import {productService} from "../services/productService"
 
 const Layout = () => {
   const dispatch = useDispatch()
   const {quantityProducts, sessionId} = useSelector((state) => state.cart)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [products, setProducts] = useState([])
+  const [selectedProductId, setSelectedProductId] = useState("")
   const navigate = useNavigate()
-  const location = useLocation()
 
   useEffect(() => {
-      if (sessionId && sessionId.trim() !== "") {
+    if (sessionId && sessionId.trim() !== "") {
       dispatch(fetchCartData())
     }
   }, [dispatch, sessionId])
 
-  // Actualiza el query param 'search' en la URL y navega a /Ecomerce/products
-  const handleSearchChange = (e) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    if (value.trim() !== "") {
-      navigate(`/Ecomerce/products?search=${encodeURIComponent(value)}`)
-    } else if (location.pathname.startsWith("/Ecomerce/products")) {
-      navigate(`/Ecomerce/products`)
+  // Cargar todos los productos para el select al montar
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await productService.getProductsForSearchBar()
+        setProducts(data)
+      } catch (error) {
+        setProducts([])
+      }
     }
-  }
+    fetchProducts()
+  }, [])
 
-  const handleSearchClick = (e) => {
-    e.preventDefault()
-    if (searchTerm.trim() !== "") {
-      navigate(`/Ecomerce/products?search=${encodeURIComponent(searchTerm)}`)
+  const handleSelectChange = async (e) => {
+    const productId = e.target.value
+    setSelectedProductId(productId)
+    if (productId) {
+      const selectedProduct = products.find(
+        (p) => p.productId === parseInt(productId)
+      )
+      if (selectedProduct) {
+        // Buscar el producto usando el filtro por nombre
+        const filtered = await productService.filterProductsByName(
+          selectedProduct.name
+        )
+        navigate(
+          `/Ecomerce/products?search=${encodeURIComponent(
+            selectedProduct.name
+          )}`,
+          {state: {filteredProducts: filtered}}
+        )
+      }
     }
   }
 
@@ -48,20 +65,22 @@ const Layout = () => {
           <div className="w-1/5">
             <img src={logo} alt="Logo Ecomerce" className=" w-14" />
           </div>
-          <div className="flex items-center bg-white  rounded-md overflow-hidden w-1/2">
-            <input
-              type="text"
-              placeholder="   ¿Qué producto estás buscando hoy?"
-              className="w-full p-1.5 text-black outline-none font-[Roboto]"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            <button
-              className="bg-yellow-500 p-1.5 cursor-pointer"
-              onClick={handleSearchClick}
+          <div className="flex items-center bg-white rounded-md overflow-hidden w-1/2 relative">
+            <select
+              className="w-full p-1.5 text-black outline-none font-[Roboto] bg-white border-none appearance-none"
+              value={selectedProductId}
+              onChange={handleSelectChange}
             >
+              <option value="">Selecciona un producto...</option>
+              {products.map((product) => (
+                <option key={product.productId} value={product.productId}>
+                  {product.name}
+                </option>
+              ))}
+            </select>
+            <span className="absolute right-0 top-0 h-full flex items-center pr-3 pointer-events-none">
               <MagnifyingGlassIcon className="h-6 w-6 text-black" />
-            </button>
+            </span>
           </div>
 
           <div className="flex space-x-3 w-1/4 justify-end">
@@ -94,10 +113,7 @@ const Layout = () => {
             href="#"
             className="hover:underline flex font-[Roboto]"
           >
-            Productos{" "}
-            <span>
-              <ChevronDownIcon className="h-6 w-6 cursor-pointer over:underline" />
-            </span>
+            Productos <span></span>
           </Link>
           <a href="#" className="hover:underline font-[Roboto]">
             Conócenos

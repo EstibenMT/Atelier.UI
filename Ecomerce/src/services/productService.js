@@ -127,4 +127,21 @@ export const productService = {
       throw error
     }
   },
+
+  getProductsForSearchBar: async () => {
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/product/searchBar`)
+    return response.data
+  },
+
+  filterProductsByName: async (productName) => {
+    const response = await axios.post(`${API_CONFIG.BASE_URL}/product/filter`, {
+      brandIds: [],
+      categoryIds: [],
+      productName,
+      minPrice: null,
+      maxPrice: null,
+      sortBy: null,
+    })
+    return response.data
+  },
 }
