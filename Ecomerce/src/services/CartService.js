@@ -75,3 +75,17 @@ export const putdeleteProduct =
         )
     }
   }
+
+export const getCheckout = async(sessionId, userId = 0) => {
+    try {
+        const fetchlink = `${API_CONFIG.BASE_URL}/shoppingCart/checkout?sessionId=${sessionId}&userId=${userId}`;
+        const response = await axios.get(fetchlink)
+        const data = response.data
+
+        return data
+
+    } catch (error) {
+        console.error("Error al realizar el checkout:", error)
+        throw error;
+    }
+}

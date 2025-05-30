@@ -3,16 +3,16 @@ import ShoppingCartCard from "../components/ShoppingCartCard";
 import ShoppingCartResume from "../components/ShoppingCartResume";
 import AddressForm from "../components/AddressForm";
 import { useSelector, useDispatch } from "react-redux";
-import { saveAddress,addSaleId } from "../data/CartSlice";
+import { saveAddress, addSaleId } from "../data/CartSlice";
 import { postSale} from "../services/SaleService";
-import { fetchCartData } from "../services/CartService";
+import { fetchCartData, getCheckout } from "../services/CartService";
 import { useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 
 const ShoppingCart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, sessionId, shoppingCartId, address, email, document} = useSelector(state => state.cart);
+    const { shoppingCartProducts, quantityProducts, total, iva, subtotal, sessionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);
     const [mode, setMode] = useState("cart");
     const [buttonMode, setButtonMode] = useState("cart");
 
@@ -21,6 +21,24 @@ const ShoppingCart = () => {
             dispatch(fetchCartData(sessionId));
         }
     }, [dispatch, sessionId]);
+
+    function validarStock(stockValidation, carrito) {
+        const mensajes = [];
+
+        const productosCarrito = {};
+        carrito.forEach(producto => {
+            productosCarrito[producto.shoppingCartProductId] = producto.product.name;
+        });
+
+        stockValidation.forEach(validacion => {
+            if (validacion.adjusted) {
+                const nombreProducto = productosCarrito[validacion.shoppingCartProductId] || "Producto desconocido";
+                mensajes.push(`El producto "${nombreProducto}" ha sido ajustado: ${validacion.message}`);
+            }
+        });
+
+        return mensajes;
+    }
 
     const handleAddressSave = (address, email, document ) => {
         dispatch(saveAddress({
@@ -37,11 +55,36 @@ const ShoppingCart = () => {
     const handleContinue = (e) => {
         e.preventDefault();
         setMode("Address");
-        setButtonMode("wait");
+        if (address &&
+            address.streetType?.name &&
+            address.description &&
+            address.number &&
+            address.city?.name &&
+            address.state?.name &&
+            address.country?.name &&
+            email &&
+            document) {
+                setButtonMode("pay")
+            } else {
+                setButtonMode("wait");
+            }
     };
     const handlePay = async (e) => {
         e.preventDefault();
         try {
+            const stockValidation = await getCheckout(sessionId);
+            
+
+            const mensajes = validarStock(stockValidation, shoppingCartProducts);
+
+            if (mensajes.length > 0) {
+                alert("Se realizaron los siguientes ajustes en tu carrito:\n\n" + mensajes.join("\n"));
+                setMode("cart");
+                setButtonMode("cart");
+                dispatch(fetchCartData(sessionId)); 
+                return;
+            }
+
             const result = await postSale(
                 shoppingCartId,                 
                 sessionId,      
