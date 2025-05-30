@@ -52,22 +52,37 @@ const ShoppingCart = () => {
     const handleAddressEdit = () => {
         setButtonMode("wait");
     };
-    const handleContinue = (e) => {
+    const handleContinue = async (e) => {
         e.preventDefault();
-        setMode("Address");
-        if (address &&
-            address.streetType?.name &&
-            address.description &&
-            address.number &&
-            address.city?.name &&
-            address.state?.name &&
-            address.country?.name &&
-            email &&
-            document) {
-                setButtonMode("pay")
-            } else {
-                setButtonMode("wait");
+        try {
+            const stockValidation = await getCheckout(sessionId);
+            const mensajes = validarStock(stockValidation, shoppingCartProducts);
+
+            if (mensajes.length > 0) {
+                alert("Se realizaron los siguientes ajustes en tu carrito:\n\n" + mensajes.join("\n"));
+                setMode("cart");
+                setButtonMode("cart");
+                dispatch(fetchCartData(sessionId));
+                return;
             }
+
+            setMode("Address");
+            if (address &&
+                address.streetType?.name &&
+                address.description &&
+                address.number &&
+                address.city?.name &&
+                address.state?.name &&
+                address.country?.name &&
+                email &&
+                document) {
+                    setButtonMode("pay")
+                } else {
+                    setButtonMode("wait");
+                }
+        } catch (error) {
+            console.error("Error al procesar la venta:", error)
+        }
     };
     const handlePay = async (e) => {
         e.preventDefault();
