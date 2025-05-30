@@ -48,7 +48,10 @@ const ShoppingCartCard = ({ shoppingCartProduct}) => {
                     <p className="text-green-600 text-sm mt-1">{shoppingCartProduct.product.productVariants[0]?.stock} disponibles</p>
                     <p className="text-sm text-gray-500">Envío: Incluido</p>
                     <p className="text-sm text-gray-500">Mínimo para compra: 1</p>
-                    <button type="button" onClick={handleDeleteProduct} variant="link" className="text-red-500 p-0 flex items-center text-sm mt-2">
+                    <button
+                        type="button"
+                        onClick={handleDeleteProduct}
+                        className="text-red-500 hover:text-red-700 hover:underline transition-colors duration-200 p-0 flex items-center text-sm mt-2">
                         <FaRegTrashAlt size={16} className="mr-1" />
                         Eliminar Producto
                     </button> 

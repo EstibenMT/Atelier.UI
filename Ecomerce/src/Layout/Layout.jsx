@@ -90,8 +90,10 @@ const Layout = () => {
             <button className=" bg-black p-1.5 rounded-md border border-white font-semibold px-4 cursor-pointer">
               Iniciar sesion
             </button>
-            <Link to="/Ecomerce/ShoppingCart">
-              <div className="relative">
+                      <div className="relative cursor-pointer"
+                          onClick={() => {
+                          window.location.href = "/Ecomerce/ShoppingCart"
+                      }}>
                 <ShoppingCartIcon className="h-6 w-6 cursor-pointer mt-2" />
                 {quantityProducts > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -99,7 +101,6 @@ const Layout = () => {
                   </span>
                 )}
               </div>
-            </Link>
           </div>
         </div>
 
