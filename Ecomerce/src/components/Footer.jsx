@@ -56,13 +56,13 @@ const Footer = () => {
             </li>
           </ul>
           <h3 className="text-lg font-semibold mt-5 mb-3">Seamos sociales</h3>
-          <white className="flex space-x-4">
+          <div className="flex space-x-4">
             <FaFacebookF className="cursor-pointer text-white hover:text-amber-100" />
             <FaTwitter className="cursor-pointer text-white hover:text-white" />
             <FaInstagram className="cursor-pointer text-white hover:text-white" />
             <FaYoutube className="cursor-pointer text-white hover:text-white" />
             <FaLinkedinIn className="cursor-pointer text-white hover:text-white" />
-          </white>
+          </div>
         </div>
 
         {/* Logo */}

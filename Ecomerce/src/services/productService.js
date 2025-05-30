@@ -28,7 +28,27 @@ export const productService = {
     }
   },
 
-  //llamado para todos los productos con filtros
+  getAllBrands: async () => {
+    try {
+      const response = await axios.get(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.BRANDS}`
+      )
+      return response.data
+    } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        console.error(
+          "Error de conexión: No se pudo conectar al servidor. Verifica que el servidor esté corriendo."
+        )
+      } else if (error.code === "ECONNABORTED") {
+        console.error(
+          "Error de timeout: La solicitud tardó demasiado en responder."
+        )
+      } else {
+        console.error("Error al obtener marcas:", error.message)
+      }
+      throw error
+    }
+  },
 
   getProductById: async (productId) => {
     try {
@@ -93,5 +113,35 @@ export const productService = {
       }
       throw error
     }
+  },
+
+  searchProductsByName: async (name) => {
+    try {
+      const response = await axios.get(
+        `${API_CONFIG.BASE_URL}/product/searchBar`,
+        {params: {name}}
+      )
+      return response.data
+    } catch (error) {
+      console.error("Error al buscar productos por nombre:", error.message)
+      throw error
+    }
+  },
+
+  getProductsForSearchBar: async () => {
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/product/searchBar`)
+    return response.data
+  },
+
+  filterProductsByName: async (productName) => {
+    const response = await axios.post(`${API_CONFIG.BASE_URL}/product/filter`, {
+      brandIds: [],
+      categoryIds: [],
+      productName,
+      minPrice: null,
+      maxPrice: null,
+      sortBy: null,
+    })
+    return response.data
   },
 }

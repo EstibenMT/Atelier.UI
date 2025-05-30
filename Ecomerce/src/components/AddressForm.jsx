@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { CiLocationOn } from "react-icons/ci";
+import { useSelector } from "react-redux";
 import { getCountries, getStates, getCities, getStreetTypes } from "../services/LocationService";
  
-const AddressForm = ({ onSaveAddress, onEditAddress }) => {
+const AddressForm = ({ onSaveAddress, onEditAddress}) => {
     const [mode, setMode] = useState("form")
     const [email, setEmail] = useState("");
     const [document, setDocument] = useState("");
@@ -10,6 +11,8 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [streetTypes, setStreetTypes] = useState([]);
+    const [errors, setErrors] = useState([]);
+    const cart = useSelector((state) => state.cart);
     const [address, setAddress] = useState({
         "addressId" : 0,
         "complement": "",
@@ -47,9 +50,60 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                 setStreetTypes(data);
             }
         };
+        
+        if (cart.address &&
+            cart.address.streetType?.name &&
+            cart.address.description &&
+            cart.address.number &&
+            cart.address.city?.name &&
+            cart.address.state?.name &&
+            cart.address.country?.name &&
+            cart.email &&
+            cart.document) {
+            setAddress(cart.address);
+            setEmail(cart.email);
+            setDocument(cart.document);
+            setMode("summary");
+        }
         loadCountries();
         loadStreetTypes();
-    }, []);
+    }, [cart]);
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!email) {
+            newErrors.email = "Email requerido";
+        } 
+        if (!document) {
+            newErrors.document = "Documento requerido";
+        }
+        if (!address.complement) {
+            newErrors.complement = "Complemento requerido";
+        }
+        if (!address.postalCode) {
+            newErrors.postalCode = "Codigo postal requerido";
+        }
+        if (!address.description) {
+            newErrors.description = "Nombre y sufijo requerido";
+        }
+        if (!address.streetType?.name) {
+            newErrors.streetType = "Tipo de via requerido";
+        }
+        if (!address.number) {
+            newErrors.number = "Numero requerido";
+        }
+        if (!address.city?.name) {
+            newErrors.city = "Ciudad requerida";
+        }
+        if (!address.country?.name) {
+            newErrors.country = "Pais requerido";
+        }
+        if (!address.state?.name) {
+            newErrors.state = "Departamento requerido";
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
 
     const handleChangeCountry = async (e) => {
         const countryId = e.target.value;
@@ -90,7 +144,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
 
     const handleChangeStreetType = (e) => {
         const streetTypeId = e.target.value;
-        const selectedStreetType = streetTypes.find(s => s.streetTypeIdId === parseInt(streetTypeId));
+        const selectedStreetType = streetTypes.find(s => s.streetTypeId === parseInt(streetTypeId));
         setAddress(prev => ({
             ...prev,
             streetType: selectedStreetType,
@@ -107,6 +161,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
 
     const handleSave = (e) => {
         e.preventDefault();
+        if (!validateForm()) { return; };
         if (onSaveAddress) {
             onSaveAddress(address,email,document); 
         }
@@ -133,6 +188,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             />
+                            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium">Documento</label>
@@ -143,6 +199,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 onChange={(e) => setDocument(e.target.value)}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             />
+                            {errors.document && <p className="text-red-500 text-sm mt-1">{errors.document}</p>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium">Codigo postal</label>
@@ -153,6 +210,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 onChange={handleChangeAddress}
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             />
+                            {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -173,6 +231,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 </option>
                             ))}
                             </select>
+                            {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country}</p>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium">Departamento</label>
@@ -189,6 +248,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                     </option>
                                 ))}
                             </select>
+                            {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium">Ciudad</label>
@@ -205,6 +265,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                     </option>
                                 ))}
                             </select>
+                            {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
                         </div>
                     </div>
 
@@ -224,6 +285,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                     </option>
                                 ))}
                             </select>
+                            {errors.streetType && <p className="text-red-500 text-sm mt-1">{errors.streetType}</p>}
                         </div>
                         <div>
                             <label className="block text-sm font-medium">Nombre y sufijo</label>
@@ -235,6 +297,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                 placeholder="Ej: 37B Sur"
                                 className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                             />
+                            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                         </div>
                         <div className="flex space-x-2">
                             <div>
@@ -247,6 +310,7 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                     placeholder="#"
                                     className="mt-1 block w-1/2 border border-gray-300 rounded-md p-2"
                                 />
+                                {errors.number && <p className="text-red-500 text-sm mt-1">{errors.number}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium">Complemento</label>
@@ -258,18 +322,9 @@ const AddressForm = ({ onSaveAddress, onEditAddress }) => {
                                     placeholder=""
                                     className="mt-1 block w-1/2 border border-gray-300 rounded-md p-2"
                                 />
+                                {errors.complement && <p className="text-red-500 text-sm mt-1">{errors.complement}</p>}
                             </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium">Punto de referencia (opcional)</label>
-                        <input
-                            type="text"
-                            name="referencia"
-                            onChange={handleChangeAddress}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
                     </div>
 
                     <button

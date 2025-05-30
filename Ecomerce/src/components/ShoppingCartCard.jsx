@@ -31,17 +31,12 @@ const ShoppingCartCard = ({ shoppingCartProduct}) => {
             sessionId
         ));
     };
-    const getImageUrl = (imgurUrl) => {
-        if (!imgurUrl) return ""
-        const imageId = imgurUrl.split("/").pop()
-        return `https://i.imgur.com/${imageId}.jpg`
-    }
     
     return (
-        <div className="flex justify-between p-4 border-b">
+        <div className="flex justify-between p-4 border-b md:col-span-2 bg-white rounded-lg shadow-sm ">
             <div className="flex gap-10">
                 <img
-                    src={getImageUrl(shoppingCartProduct.product.productImages[0]?.imageUrl)}
+                    src={shoppingCartProduct.product.productImages[0]?.imageUrl}
                     alt={shoppingCartProduct.product.name}
                     className="w-24 h-30 object-cover"
                 />          
@@ -60,7 +55,12 @@ const ShoppingCartCard = ({ shoppingCartProduct}) => {
                 </div>
             </div>
             <div className="text-right">
-                <Counter value={shoppingCartProduct.quantity} onIncrement={handleIncrement} onDecrement={handleDecrement} />
+                <Counter
+                    value={shoppingCartProduct.quantity}
+                    onIncrement={handleIncrement}
+                    onDecrement={handleDecrement}
+                    max={shoppingCartProduct.product.productVariants[0]?.stock}
+                />
                 <p className="font-semibold">${shoppingCartProduct.product.price}</p>
                 <p className="text-green-600 text-sm">Exento de IVA</p>
             </div>
