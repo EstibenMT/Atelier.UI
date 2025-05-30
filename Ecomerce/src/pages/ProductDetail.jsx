@@ -89,9 +89,7 @@ const ProductDetail = () => {
         <div className="md:w-2/3">
           <div className="mb-4">
             <img
-              src={
-                product.productImages?.[selectedImage]?.imageUrl
-              }
+              src={product.productImages?.[selectedImage]?.imageUrl}
               alt={product.name}
               className="w-full h-auto max-h-[600px] object-contain rounded-lg bg-gray-50"
             />
@@ -108,7 +106,7 @@ const ProductDetail = () => {
                 } hover:border-blue-300 rounded-lg transition-all duration-200`}
               >
                 <img
-                        src={image.imageUrl}
+                  src={image.imageUrl}
                   alt={`${product.name} - ${index + 1}`}
                   className="w-20 h-20 object-contain rounded-lg bg-gray-50"
                 />
@@ -127,11 +125,7 @@ const ProductDetail = () => {
               ${product.price}
             </span>
             <span className="text-green-500 text-sm ml-4">
-              {product.productVariants?.reduce(
-                (total, variant) => total + variant.stock,
-                0
-              )}{" "}
-              uds.
+              {product.productVariants?.[0]?.stock || 0} uds.
             </span>
           </div>
 
