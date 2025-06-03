@@ -1,59 +1,78 @@
+﻿// src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUser, registerUser } from '../../services/authService';
+import axios from 'axios';
 
-const tokenFromStorage = localStorage.getItem('token');
+const BASE_URL = 'http://localhost:5209'; // Ajusta si tu API corre en otro puerto
+
+// Thunk para login: POST a http://localhost:5209/api/auth/login
+export const loginThunk = createAsyncThunk(
+    'auth/login',
+    async ({ email, password }, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+                email,
+                password,
+            });
+            // response.data tiene { userId, name, lastName, email, token }
+            return response.data;
+        } catch (err) {
+            // Si el servidor devuelve 401 o 400, err.response.data contendrá el mensaje
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
+
+// Thunk para register: POST a http://localhost:5209/api/user/register
+export const registerThunk = createAsyncThunk(
+    'auth/register',
+    async (formData, { rejectWithValue }) => {
+        try {
+            // formData debe coincidir con RegisterRequestDto:
+            // { name, email, password, passwordConfirm, phone, document, lastName, name2, documentTypeId }
+            const response = await axios.post(`${BASE_URL}/api/user/register`, formData);
+            return response.data; // "Usuario registrado correctamente."
+        } catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+);
 
 const initialState = {
-    user: null,
-    token: tokenFromStorage || null,
+    user: null,                         // Aquí guardaremos { userId, name, lastName, email, token }
+    token: localStorage.getItem('token') || null,
     loading: false,
     error: null,
 };
-
-export const loginThunk = createAsyncThunk('auth/login', async (credentials, thunkAPI) => {
-    try {
-        const data = await loginUser(credentials);
-        localStorage.setItem('token', data.token);
-        return data;
-    } catch (error) {
-        return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    }
-});
-
-export const registerThunk = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
-    try {
-        const data = await registerUser(userData);
-        return data;
-    } catch (error) {
-        return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    }
-});
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         logout(state) {
-            localStorage.removeItem('token');
             state.user = null;
             state.token = null;
+            localStorage.removeItem('token');
         },
     },
     extraReducers: (builder) => {
         builder
+            // --- LOGIN ---
             .addCase(loginThunk.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
             .addCase(loginThunk.fulfilled, (state, action) => {
                 state.loading = false;
-                state.token = action.payload.token;
-                state.user = action.payload;
+                state.user = action.payload;            // action.payload = { userId, name, lastName, email, token }
+                state.token = action.payload.token;      // guardamos el token
+                localStorage.setItem('token', action.payload.token);
             })
             .addCase(loginThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
+
+            // --- REGISTER ---
             .addCase(registerThunk.pending, (state) => {
                 state.loading = true;
                 state.error = null;
