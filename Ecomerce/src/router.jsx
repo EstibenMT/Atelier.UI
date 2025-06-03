@@ -6,8 +6,21 @@ import Products from "./pages/Products"
 import PagoExitoso from "./pages/PagoExitoso"
 import ProductDetail from "./pages/ProductDetail"
 import ShoppingCart from "./pages/ShoppingCart"
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 const router = createBrowserRouter([
+
+    // Rutas de autenticación (sin Layout)
+    {
+        path: "/Ecomerce/Login",
+        element: <Login />,
+    },
+    {
+        path: "/Ecomerce/Register",
+        element: <Register />,
+    },
+
   {
     path: "/", //Home principal,
     element: <Layout />,
@@ -35,7 +48,15 @@ const router = createBrowserRouter([
       {
         path: "/Ecomerce/ShoppingCart",
         element: <ShoppingCart />,
-      },
+        },
+        {
+        path: "/Ecomerce/Register",
+        element: <Register />,
+        },
+        {
+        path: "/Ecomerce/Login",
+        element: <Login />,
+        },
     ],
   },
 ])
