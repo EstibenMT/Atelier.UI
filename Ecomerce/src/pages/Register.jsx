@@ -1,7 +1,7 @@
 // src/pages/Register.jsx
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerThunk } from "../Auth/redux/slices/authSlice";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -61,14 +61,12 @@ export default function Register() {
             <div className="bg-white max-w-3xl w-11/12 lg:w-2/3 p-8 shadow-md rounded-lg">
                 {/* Botón cerrar (solo estética) */}
                 <Link to="/">
-                    <button
-                        className="absolute top-6 right-6 text-gray-400 hover:text-gray-700"
-                        onClick={() => window.history.back()}
-                    >
-                        ×
-                    </button>
+                <button
+                    className="absolute top-6 right-6 text-gray-400 hover:text-gray-700"
+                >
+                    ×
+                </button>
                 </Link>
-
                 <h2 className="text-2xl font-semibold text-center text-gray-900">
                     Crea tu cuenta
                 </h2>

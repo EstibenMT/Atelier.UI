@@ -57,7 +57,6 @@ export default function Login() {
                 <Link to="/">
                 <button
                     className="absolute top-6 right-6 text-gray-400 hover:text-gray-700"
-                    onClick={() => window.history.back()}
                 >
                     ×
                 </button>
