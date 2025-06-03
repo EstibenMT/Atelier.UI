@@ -53,6 +53,16 @@ export default function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="bg-white max-w-md w-11/12 lg:w-2/5 p-8 shadow-md rounded-lg">
+                {/* Botón cerrar (solo estética) */}
+                <Link to="/">
+                <button
+                    className="absolute top-6 right-6 text-gray-400 hover:text-gray-700"
+                    onClick={() => window.history.back()}
+                >
+                    ×
+                </button>
+                </Link>
+
                 <h2 className="text-2xl font-semibold text-center text-gray-900">
                     Nos alegra verte de nuevo
                 </h2>
