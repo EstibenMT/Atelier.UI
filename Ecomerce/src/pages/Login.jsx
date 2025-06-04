@@ -58,6 +58,11 @@ export default function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="bg-white w-full max-w-md p-8 shadow-md rounded-lg">
+                <Link to="/">
+                    <button className="absolute top-6 right-6 text-gray-400 hover:text-gray-700">
+                        ×
+                    </button>
+                </Link>
                 <h2 className="text-2xl font-semibold text-center text-gray-900">
                     Iniciar sesión
                 </h2>
@@ -127,7 +132,7 @@ export default function Login() {
 
                     <div className="text-center mt-4 text-sm text-gray-600">
                         ¿No tienes cuenta?{" "}
-                        <Link to="/register" className="text-blue-600 hover:underline">
+                        <Link to="/Ecomerce/Register" className="text-blue-600 hover:underline">
                             Regístrate aquí
                         </Link>
                     </div>

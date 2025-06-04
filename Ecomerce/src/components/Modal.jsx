@@ -1,7 +1,12 @@
 import React from "react"
-import {FaCheck} from "react-icons/fa"
+import { FaCheck } from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
 
-const Modal = ({isOpen, onClose, product}) => {
+
+
+const Modal = ({ isOpen, onClose, product }) => {
+
+    const navigate = useNavigate();
   if (!isOpen) return null
 
   return (
@@ -38,9 +43,8 @@ const Modal = ({isOpen, onClose, product}) => {
           </button>
           <button
             onClick={() => {
-              onClose()
-              window.location.href = "/Ecomerce/ShoppingCart"
-            }}
+                          navigate("/Ecomerce/ShoppingCart");
+                      }}
             className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Ver carrito

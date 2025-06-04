@@ -9,18 +9,21 @@ import { fetchCartData, getCheckout } from "../services/CartService";
 import { useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 
+
+
 const ShoppingCart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { shoppingCartProducts, quantityProducts, total, iva, subtotal, sessionId, shoppingCartId, address, email, document } = useSelector(state => state.cart);
+    const userId = useSelector((state) => state.auth.userId) ?? null;
     const [mode, setMode] = useState("cart");
     const [buttonMode, setButtonMode] = useState("cart");
 
     useEffect(() => {
         if (sessionId && sessionId.trim() !== "") {
-            dispatch(fetchCartData(sessionId));
+            dispatch(fetchCartData(sessionId,userId));
         }
-    }, [dispatch, sessionId]);
+    }, [dispatch, sessionId, userId]);
 
     function validarStock(stockValidation, carrito) {
         const mensajes = [];

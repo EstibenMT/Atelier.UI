@@ -30,7 +30,7 @@ export default function Layout() {
 
     const handleLogout = () => {
         dispatch(logout());
-        navigate("/Ecomerce/Login");
+        navigate("/");
     };
 
     return (
