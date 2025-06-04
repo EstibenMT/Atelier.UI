@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { registerThunk, loginThunk } from "../Auth/redux/slices/authSlice";
+import { fetchCartData } from "../services/CartService"; // 𝗎𝗌𝖾𝗋𝖢𝖺𝗋𝗍
+import { getSessionId } from "../data/Seccion";          // Para sessionId
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -12,7 +14,6 @@ export default function Register() {
     const navigate = useNavigate();
     const { loading, error: apiError } = useSelector((state) => state.auth);
 
-    // Estado del formulario
     const [form, setForm] = useState({
         documentType: "CC",
         documentNumber: "",
@@ -22,22 +23,16 @@ export default function Register() {
         password: "",
         confirmPassword: "",
         agreeTerms: false,
-        noRobot: true, // “No soy un robot” marcado por defecto
+        noRobot: true,
     });
-
-    // Mostrar/ocultar contraseñas
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-
-    // Errores de validación
     const [validationErrors, setValidationErrors] = useState([]);
-    // Campos inválidos para bordes rojos
     const [invalidFields, setInvalidFields] = useState({});
 
-    // Regex para validar email
-    const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isEmailValid = (email) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    // Verifica campos de texto/contraseña (no incluye checkboxes)
     const areRequiredFieldsFilled = () => {
         const {
             documentNumber,
@@ -59,21 +54,16 @@ export default function Register() {
         );
     };
 
-    // Verifica formulario completo (incluye checkboxes)
-    const isFormValid = () => {
-        return areRequiredFieldsFilled() && form.agreeTerms && form.noRobot;
-    };
+    const isFormValid = () =>
+        areRequiredFieldsFilled() && form.agreeTerms && form.noRobot;
 
     const onChange = (e) => {
         const { name, value, type, checked } = e.target;
-
-        // Actualiza valor
         setForm((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value,
         }));
 
-        // Si campo estaba inválido, lo quitamos
         if (invalidFields[name]) {
             setInvalidFields((prev) => {
                 const copy = { ...prev };
@@ -81,13 +71,10 @@ export default function Register() {
                 return copy;
             });
         }
-
-        // Filtrar mensajes de validación solo para este campo
         if (validationErrors.length > 0) {
             setValidationErrors((prev) =>
                 prev.filter(
                     (msg) =>
-                        // Mensajes formateados como "campo: texto..."
                         !msg.toLowerCase().includes(name.toLowerCase())
                 )
             );
@@ -97,12 +84,14 @@ export default function Register() {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        // Validación completa
+        // --- VALIDACIONES ANTES DE ENVIAR ---
         const errors = [];
         const invalids = {};
 
         if (form.documentNumber.trim() === "") {
-            errors.push("documentNumber: El número de documento es obligatorio.");
+            errors.push(
+                "documentNumber: El número de documento es obligatorio."
+            );
             invalids.documentNumber = true;
         }
         if (form.firstName.trim() === "") {
@@ -117,7 +106,9 @@ export default function Register() {
             errors.push("email: El campo Correo electrónico es obligatorio.");
             invalids.email = true;
         } else if (!isEmailValid(form.email)) {
-            errors.push("email: El correo electrónico no tiene un formato válido.");
+            errors.push(
+                "email: El correo electrónico no tiene un formato válido."
+            );
             invalids.email = true;
         }
         if (form.password === "") {
@@ -125,7 +116,9 @@ export default function Register() {
             invalids.password = true;
         }
         if (form.confirmPassword === "") {
-            errors.push("confirmPassword: El campo Confirmar contraseña es obligatorio.");
+            errors.push(
+                "confirmPassword: El campo Confirmar contraseña es obligatorio."
+            );
             invalids.confirmPassword = true;
         }
         if (
@@ -153,18 +146,17 @@ export default function Register() {
             return;
         }
 
-        // Si no hay errores de validación, limpiamos
         setValidationErrors([]);
         setInvalidFields({});
 
-        // Payload con PascalCase para coincidir con RegisterRequestDto
+        // --- PAYLOAD PascalCase para API ---
         const payload = {
             Name: form.firstName,
             LastName: form.lastName,
             Email: form.email,
             Password: form.password,
             PasswordConfirm: form.confirmPassword,
-            Phone: "3134904285", // fijo, o reemplazar por input adicional
+            Phone: "3134904285",
             Document: form.documentNumber,
             Name2: "",
             DocumentTypeId: form.documentType === "CC" ? 1 : 2,
@@ -173,12 +165,18 @@ export default function Register() {
         dispatch(registerThunk(payload))
             .unwrap()
             .then(() => {
-                // Registro OK → login automático
-                dispatch(loginThunk({ email: form.email, password: form.password }))
+                // Después del registro, hacemos login automático:
+                dispatch(
+                    loginThunk({ email: form.email, password: form.password })
+                )
                     .unwrap()
-                    .then(() => {
-                        // Cambié la ruta aquí: ahora vamos a "/" en lugar de "/Ecomerce"
-                        navigate("/");
+                    .then((userData) => {
+                        const sessionId = getSessionId();
+                        const userId = userData.userId;
+                        // Obtenemos el carrito para este usuario
+                        dispatch(fetchCartData(sessionId, userId)).then(() => {
+                            navigate("/");
+                        });
                     })
                     .catch(() => {
                         alert("Login automático fallido");
@@ -203,7 +201,10 @@ export default function Register() {
                 <p className="text-center font-medium mt-6 text-gray-700">Personal</p>
                 <p className="text-center text-sm mb-4 text-gray-600">
                     ¿Ya tienes una cuenta?{" "}
-                    <a href="/Ecomerce/Login" className="text-blue-600 hover:underline">
+                    <a
+                        href="/Ecomerce/Login"
+                        className="text-blue-600 hover:underline"
+                    >
                         Inicia sesión aquí
                     </a>
                 </p>
@@ -240,10 +241,12 @@ export default function Register() {
                         </div>
                     </div>
 
-                    {/* Campo Nombres */}
+                    {/* Nombres */}
                     <div
                         className={
-                            invalidFields.firstName ? "border border-red-500 rounded-md" : ""
+                            invalidFields.firstName
+                                ? "border border-red-500 rounded-md"
+                                : ""
                         }
                     >
                         <Input
@@ -256,10 +259,12 @@ export default function Register() {
                         />
                     </div>
 
-                    {/* Campo Apellidos */}
+                    {/* Apellidos */}
                     <div
                         className={
-                            invalidFields.lastName ? "border border-red-500 rounded-md" : ""
+                            invalidFields.lastName
+                                ? "border border-red-500 rounded-md"
+                                : ""
                         }
                     >
                         <Input
@@ -272,9 +277,11 @@ export default function Register() {
                         />
                     </div>
 
-                    {/* Campo Correo electrónico */}
+                    {/* Correo electrónico */}
                     <div
-                        className={invalidFields.email ? "border border-red-500 rounded-md" : ""}
+                        className={
+                            invalidFields.email ? "border border-red-500 rounded-md" : ""
+                        }
                     >
                         <Input
                             label="Correo electrónico *"
@@ -287,17 +294,23 @@ export default function Register() {
                     </div>
 
                     <p className="text-xs text-gray-500">
-                        Elige una contraseña con un mínimo de 6 caracteres y al menos una letra
-                        mayúscula, minúscula, número o carácter especial.
+                        Elige una contraseña con un mínimo de 6 caracteres y al menos una
+                        letra mayúscula, minúscula, número o carácter especial.
                     </p>
 
-                    {/* Campo Contraseña */}
+                    {/* Contraseña */}
                     <div
                         className={
-                            invalidFields.password ? "border border-red-500 rounded-md" : ""
+                            invalidFields.password
+                                ? "border border-red-500 rounded-md"
+                                : ""
                         }
                     >
-                        <label className="block text-sm mb-1 text-gray-700">Contraseña *</label>
+                        <label
+                            className="block text-sm mb-1 text-gray-700"
+                        >
+                            Contraseña *
+                        </label>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -321,7 +334,7 @@ export default function Register() {
                         </div>
                     </div>
 
-                    {/* Campo Confirmar Contraseña */}
+                    {/* Confirmar contraseña */}
                     <div
                         className={
                             invalidFields.confirmPassword
@@ -329,7 +342,9 @@ export default function Register() {
                                 : ""
                         }
                     >
-                        <label className="block text-sm mb-1 text-gray-700">
+                        <label
+                            className="block text-sm mb-1 text-gray-700"
+                        >
                             Confirmar contraseña *
                         </label>
                         <div className="relative">
@@ -392,11 +407,17 @@ export default function Register() {
                             />
                             <span>
                                 He leído y acepto los{" "}
-                                <a href="/terms" className="text-blue-600 hover:underline">
+                                <a
+                                    href="/terms"
+                                    className="text-blue-600 hover:underline"
+                                >
                                     Términos y Condiciones
                                 </a>{" "}
                                 y la{" "}
-                                <a href="/privacy" className="text-blue-600 hover:underline">
+                                <a
+                                    href="/privacy"
+                                    className="text-blue-600 hover:underline"
+                                >
                                     Política de Privacidad
                                 </a>
                                 .
@@ -414,7 +435,6 @@ export default function Register() {
                         {loading ? "Registrando..." : "CREAR CUENTA"}
                     </Button>
 
-                    {/* Mensajes de validación y errores de la API */}
                     <div className="mt-4">
                         {validationErrors.length > 0 && (
                             <ul className="text-red-600 text-sm list-disc list-inside">

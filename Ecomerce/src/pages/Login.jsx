@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { loginThunk } from "../Auth/redux/slices/authSlice";
+import { fetchCartData } from "../services/CartService"; // 𝗎𝗌𝖾𝗋𝖢𝖺𝗋𝗍
+import { getSessionId } from "../data/Seccion";          // Para obtener el sessionId local
 import Button from "../components/Button";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
@@ -11,24 +13,20 @@ export default function Login() {
     const navigate = useNavigate();
     const { loading, error } = useSelector((state) => state.auth);
 
-    // Manejo de estado local para email y password
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
     const [showPassword, setShowPassword] = useState(false);
 
-    // Actualiza form.email o form.password
     const onChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Al enviar el form, despachamos el thunk
     const onSubmit = (e) => {
         e.preventDefault();
 
-        // Validamos en el frontend que no esté vacío
         if (!form.email.trim()) {
             alert("Por favor ingresa un correo electrónico.");
             return;
@@ -38,42 +36,33 @@ export default function Login() {
             return;
         }
 
-        // Despachamos el thunk con { email, password }
         dispatch(loginThunk({ email: form.email, password: form.password }))
             .unwrap()
-            .then(() => {
-                navigate("/"); // redirige a Home si el login fue exitoso
+            .then((userData) => {
+                // 𝘊𝘰𝘯seguimos sessionId local (se genera en Seccion.js al entrar como anónimo)
+                const sessionId = getSessionId();
+                // userData trae { userId, name, lastName, email, token }
+                const userId = userData.userId;
+
+                // 𝗗𝗲𝗯𝗲𝗺𝗼𝘀 𝗳𝗲𝗰𝗵𝗮𝗿 (𝗳𝗲𝘁𝗰𝗵) 𝗲𝗹 𝗰𝗮𝗿𝗿𝗶𝘁𝗼 𝗰𝗼𝗻 𝗲𝗹 𝘂𝘀𝘂𝗮𝗿𝗶𝗼
+                dispatch(fetchCartData(sessionId, userId)).then(() => {
+                    // Finalmente, redirigir a Home (o donde sea tu “dashboard”)
+                    navigate("/");
+                });
             })
-            .catch((err) => {
-                // err ya viene del payload de rejectWithValue
-                alert(err ?? "Credenciales inválidas");
+            .catch(() => {
+                // Si falla login, el slice ya puso el error en estado y se muestra abajo
             });
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="bg-white max-w-md w-11/12 lg:w-2/5 p-8 shadow-md rounded-lg">
-                {/* Botón cerrar (solo estética) */}
-                <Link to="/">
-                <button
-                    className="absolute top-6 right-6 text-gray-400 hover:text-gray-700"
-                >
-                    ×
-                </button>
-                </Link>
-
+            <div className="bg-white w-full max-w-md p-8 shadow-md rounded-lg">
                 <h2 className="text-2xl font-semibold text-center text-gray-900">
-                    Nos alegra verte de nuevo
+                    Iniciar sesión
                 </h2>
-                <p className="text-center text-sm mt-2 text-gray-600">
-                    ¿No tienes una cuenta?{" "}
-                    <Link to="/Ecomerce/Register" className="text-blue-600 hover:underline">
-                        Créala aquí
-                    </Link>
-                </p>
-
-                <form onSubmit={onSubmit} className="mt-6 space-y-5">
-                    {/* -------- Campo Email -------- */}
+                <form onSubmit={onSubmit} className="space-y-4 mt-6">
+                    {/* --- Email --- */}
                     <div>
                         <label htmlFor="email" className="block text-sm mb-1 text-gray-700">
                             Correo electrónico
@@ -89,9 +78,12 @@ export default function Login() {
                         />
                     </div>
 
-                    {/* -------- Campo Contraseña con ícono -------- */}
+                    {/* --- Contraseña con ícono --- */}
                     <div>
-                        <label htmlFor="password" className="block text-sm mb-1 text-gray-700">
+                        <label
+                            htmlFor="password"
+                            className="block text-sm mb-1 text-gray-700"
+                        >
                             Contraseña
                         </label>
                         <div className="relative">
@@ -101,7 +93,7 @@ export default function Login() {
                                 type={showPassword ? "text" : "password"}
                                 value={form.password}
                                 onChange={onChange}
-                                placeholder="Ahora tu contraseña"
+                                placeholder="Escribe tu contraseña"
                                 className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {showPassword ? (
@@ -118,32 +110,27 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {/* -------- Opciones Recordar sesión -------- */}
-                    <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="form-checkbox" />
-                            <span>Recordar mi sesión</span>
-                        </label>
-                        <Link to="/Ecomerce/Login" className="text-blue-600 hover:underline">
-                            ¿Problemas al ingresar?
-                        </Link>
-                    </div>
-
-                    {/* -------- Botón Iniciar Sesión -------- */}
                     <Button
                         type="submit"
-                        className={`w-full ${loading ? "opacity-50" : ""}`}
+                        className={`w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white ${loading ? "opacity-50" : ""
+                            }`}
                         disabled={loading}
                     >
                         {loading ? "Cargando..." : "Iniciar sesión"}
                     </Button>
 
-                    {/* -------- Mensaje de Error -------- */}
                     {error && (
                         <p className="text-red-600 text-center text-sm mt-2">
                             {typeof error === "string" ? error : "Error al iniciar sesión"}
                         </p>
                     )}
+
+                    <div className="text-center mt-4 text-sm text-gray-600">
+                        ¿No tienes cuenta?{" "}
+                        <Link to="/register" className="text-blue-600 hover:underline">
+                            Regístrate aquí
+                        </Link>
+                    </div>
                 </form>
             </div>
         </div>

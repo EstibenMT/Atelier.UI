@@ -1,13 +1,11 @@
-
-function generateSessionId() {
-    return Date.now().toString(36) + Math.random().toString(36).substring(2);
-}
+// src/data/Seccion.js
+import { v4 as uuidv4 } from "uuid";
 
 export function getSessionId() {
-    let sessionId = localStorage.getItem('sessionId');
+    let sessionId = localStorage.getItem("sessionId");
     if (!sessionId) {
-        sessionId = generateSessionId();
-        localStorage.setItem('sessionId', sessionId);
+        sessionId = uuidv4();
+        localStorage.setItem("sessionId", sessionId);
     }
     return sessionId;
 }
