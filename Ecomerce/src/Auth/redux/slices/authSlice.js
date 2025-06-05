@@ -5,10 +5,13 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5209'; // Ajusta si tu API corre en otro puerto
 
-export const logoutThunk = createAsyncThunk('auth/logoutThunk', async (_, { dispatch }) => {
-  dispatch(logout());
-  dispatch(clearCart());
-});
+export const logoutThunk = createAsyncThunk(
+  'auth/logoutThunk',
+  async (_, { dispatch }) => {
+    dispatch(logout());
+    dispatch(clearCart());
+  }
+);
 
 // Thunk para login: POST a http://localhost:5209/api/auth/login
 export const loginThunk = createAsyncThunk(

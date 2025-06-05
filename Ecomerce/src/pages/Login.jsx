@@ -46,8 +46,14 @@ export default function Login() {
 
                 // 𝗗𝗲𝗯𝗲𝗺𝗼𝘀 𝗳𝗲𝗰𝗵𝗮𝗿 (𝗳𝗲𝘁𝗰𝗵) 𝗲𝗹 𝗰𝗮𝗿𝗿𝗶𝘁𝗼 𝗰𝗼𝗻 𝗲𝗹 𝘂𝘀𝘂𝗮𝗿𝗶𝗼
                 dispatch(fetchCartData(sessionId, userId)).then(() => {
-                    // Finalmente, redirigir a Home (o donde sea tu “dashboard”)
-                    navigate("/");
+                    const redirectPath = localStorage.getItem("redirectAfterLogin");
+                
+                    if (redirectPath) {
+                        localStorage.removeItem("redirectAfterLogin");
+                        navigate(redirectPath);
+                    } else {
+                        navigate("/");
+                    }
                 });
             })
             .catch(() => {

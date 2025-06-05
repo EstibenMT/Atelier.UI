@@ -58,7 +58,7 @@ const ShoppingCart = () => {
     const handleContinue = async (e) => {
         e.preventDefault();
         try {
-            const stockValidation = await getCheckout(sessionId);
+            const stockValidation = await dispatch(getCheckout(sessionId, navigate));
             const mensajes = validarStock(stockValidation, shoppingCartProducts);
 
             if (mensajes.length > 0) {
@@ -90,7 +90,7 @@ const ShoppingCart = () => {
     const handlePay = async (e) => {
         e.preventDefault();
         try {
-            const stockValidation = await getCheckout(sessionId);
+            const stockValidation = await dispatch(getCheckout(sessionId, navigate));
             
 
             const mensajes = validarStock(stockValidation, shoppingCartProducts);
