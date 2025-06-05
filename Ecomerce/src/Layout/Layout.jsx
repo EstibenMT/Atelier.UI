@@ -12,13 +12,13 @@ import {
 import Footer from "../components/Footer";
 import logo from "../assets/LogoB.png";
 import { fetchCartData } from "../services/CartService";
-import { logout } from "../Auth/redux/slices/authSlice";
+import { logoutThunk } from "../Auth/redux/slices/authSlice";
 
 export default function Layout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { quantityProducts, sessionId } = useSelector((state) => state.cart);
+    const { quantityProducts} = useSelector((state) => state.cart);
     const { user, token } = useSelector((state) => state.auth);
 
     // Si hay usuario logueado (token + user), cargamos el carrito
@@ -29,7 +29,7 @@ export default function Layout() {
     }, [dispatch, token, user]);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logoutThunk());
         navigate("/");
     };
 
