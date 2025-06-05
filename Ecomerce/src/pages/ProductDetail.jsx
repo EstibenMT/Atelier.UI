@@ -45,6 +45,11 @@ const ProductDetail = () => {
         setLoading(true)
         const data = await productService.getProductById(id)
         setProduct(data)
+        if (data.productVariants?.length > 0) {
+          const firstVariant = data.productVariants[0]
+          setSelectedSize(firstVariant.size.name)
+          setSelectedColor(firstVariant.color.name)
+        }
       } catch (error) {
         setError("Error al cargar el producto")
         console.error("Error:", error)
@@ -55,6 +60,13 @@ const ProductDetail = () => {
 
     fetchProduct()
   }, [id])
+
+  const getSelectedStock = () => {
+    const variant = product?.productVariants?.find(
+      (v) => v.size.name === selectedSize && v.color.name === selectedColor
+    )
+    return variant?.stock ?? 0
+  }
 
   if (loading) {
     return (
@@ -122,12 +134,13 @@ const ProductDetail = () => {
           <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
           <p className="text-gray-600 mb-6">{product.description}</p>
 
+          {/* ✅ MOSTRAR PRECIO Y STOCK SEGÚN VARIANTE */}
           <div className="mb-6">
             <span className="text-3xl font-bold text-blue-600">
               ${product.price}
             </span>
             <span className="text-green-500 text-sm ml-4">
-              {product.productVariants?.[0]?.stock || 0} uds.
+              {getSelectedStock()} uds.
             </span>
           </div>
 
@@ -154,21 +167,19 @@ const ProductDetail = () => {
           {/* Selector de colores */}
           <div className="mb-6">
             <h3 className="text-sm font-medium mb-2">Color:</h3>
-            <div className="flex gap-2">
-              {[
-                ...new Set(product.productVariants?.map((v) => v.color.name)),
-              ].map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-8 h-8 rounded-full border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                    selectedColor === color
-                      ? "border-blue-500"
-                      : "border-gray-300"
-                  }`}
-                  style={{backgroundColor: color.toLowerCase()}}
-                  title={color}
-                />
+            <div className="flex gap-4">
+              {[...new Set(product.productVariants?.map((v) => v.color.name))].map((color) => (
+                <div key={color} className="flex flex-col items-center">
+                  <span className="text-xs mb-1">{color}</span>
+                  <button
+                    onClick={() => setSelectedColor(color)}
+                    className={`w-8 h-8 rounded-full border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                      selectedColor === color ? "border-blue-500" : "border-gray-300"
+                    }`}
+                    style={{ backgroundColor: color.toLowerCase() }}
+                    title={color}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -195,11 +206,23 @@ const ProductDetail = () => {
           <button
             type="button"
             onClick={handleAddProduct}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+            disabled={getSelectedStock() <= 0}
+            className={`w-full py-3 rounded-lg flex items-center justify-center gap-2 transition-colors ${
+              getSelectedStock() > 0
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gray-300 text-gray-600 cursor-not-allowed"
+            }`}
           >
             <ShoppingCartIcon className="w-5 h-5" />
             Añadir al carrito
           </button>
+            
+          {/* Mensaje si no hay stock */}
+          {getSelectedStock() <= 0 && (
+            <p className="text-sm text-red-500 mt-2 text-center">
+              No hay stock disponible para esta combinación.
+            </p>
+          )}
         </div>
       </div>
 

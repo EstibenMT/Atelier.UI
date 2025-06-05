@@ -13,7 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 
 const router = createBrowserRouter([
-    // Rutas públicas (no envueltas en Layout)
+    // Rutas pï¿½blicas (no envueltas en Layout)
     {
         path: '/Ecomerce/Login',
         element: <Login />,
