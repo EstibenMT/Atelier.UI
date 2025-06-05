@@ -152,4 +152,8 @@ Desktop.ini
 .vite/
 .turbo/
 
+.vs/
 
+/Ecomerce/src/data/CartThunk.js
+/Ecomerce/src/data/Store.js
+/Ecomerce/src/data/CartService.js
