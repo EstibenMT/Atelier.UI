@@ -1,8 +1,14 @@
 ﻿// src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { clearCart } from '../../../data/CartSlice';
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5209'; // Ajusta si tu API corre en otro puerto
+
+export const logoutThunk = createAsyncThunk('auth/logoutThunk', async (_, { dispatch }) => {
+  dispatch(logout());
+  dispatch(clearCart());
+});
 
 // Thunk para login: POST a http://localhost:5209/api/auth/login
 export const loginThunk = createAsyncThunk(
@@ -14,7 +20,8 @@ export const loginThunk = createAsyncThunk(
                 password,
             });
             // response.data tiene { userId, name, lastName, email, token }
-            return response.data;
+            const { token, ...user } = response.data;
+            return { user, token };
         } catch (err) {
             // Si el servidor devuelve 401 o 400, err.response.data contendrá el mensaje
             return rejectWithValue(err.response?.data || err.message);
@@ -38,7 +45,7 @@ export const registerThunk = createAsyncThunk(
 );
 
 const initialState = {
-    user: null,                         // Aquí guardaremos { userId, name, lastName, email, token }
+    user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
     token: localStorage.getItem('token') || null,
     loading: false,
     error: null,
@@ -52,6 +59,7 @@ const authSlice = createSlice({
             state.user = null;
             state.token = null;
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
         },
     },
     extraReducers: (builder) => {
@@ -62,10 +70,11 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginThunk.fulfilled, (state, action) => {
+                state.user = action.payload.user;
+                state.token = action.payload.token;
                 state.loading = false;
-                state.user = action.payload;            // action.payload = { userId, name, lastName, email, token }
-                state.token = action.payload.token;      // guardamos el token
                 localStorage.setItem('token', action.payload.token);
+                localStorage.setItem('user', JSON.stringify(action.payload.user));
             })
             .addCase(loginThunk.rejected, (state, action) => {
                 state.loading = false;

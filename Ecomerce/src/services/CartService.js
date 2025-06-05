@@ -2,29 +2,29 @@ import axios from "axios"
 import {addData} from "../data/CartSlice"
 import {API_CONFIG} from "../config/api.config"
 
- // Ahora recibe sessionId y userId (userId puede ser 0 si es anónimo)
+ // Ahora recibe sessionId y userId (userId puede ser 0 si es an nimo)
 export const fetchCartData = (sessionId, userId = 0) => async (dispatch) => {
     try {
-            // Si userId > 0, lo pasamos como query; si es 0, omitimos en la URL
-            const fetchlink =
-                  userId !== null
-                        ? `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}?userId=${userId}`
-                    : `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}`
-            
-                const response = await axios.get(fetchlink);
-            const data = response.data;
-            
-                dispatch(addData({ data }));
+          // Si userId > 0, lo pasamos como query; si es 0, omitimos en la URL
+          const fetchlink =
+                userId && userId > 0
+                  ? `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}?userId=${userId}`
+                  : `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}`
+          
+          const response = await axios.get(fetchlink);
+          const data = response.data;
+          
+          dispatch(addData({ data: { ...data, userId } }));
         } catch (error) {
-                console.error("Error al obtener el carrito:", error);
-            }
+            console.error("Error al obtener el carrito:", error);
+          }
     };
 
 export const postAddProduct =
   (productId, quantity = 1, productVariantId, sessionId, userId=null) =>
   async (dispatch) => {
     const payload = {
-      userId: userId,
+      userId: userId > 0 ? userId : null,
       sessionId: sessionId,
       productId: parseInt(productId),
       quantity: quantity,
@@ -40,7 +40,7 @@ export const postAddProduct =
       })
       const data = response.data
 
-      dispatch(addData({data}))
+      dispatch(addData({ data: { ...data, userId } }));
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error)
     }
@@ -71,8 +71,8 @@ export const putdeleteProduct =
       })
 
       const data = response.data
-        console.log("Respuesta del servidor:", data)
-        dispatch(addData({ data }))
+      //console.log("Respuesta del servidor:", data)
+      dispatch(addData({ data: { ...data, userId } }));
     } catch (error) {
       console.error(
         "Error al eliminar el producto:",
