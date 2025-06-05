@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API_URL = "http://localhost:5209/api"
+const API_URL = "http://atelier.runasp.net/api"
 
 export const getCountries = async () => {
   try {
