@@ -2,24 +2,29 @@ import axios from "axios"
 import {addData} from "../data/CartSlice"
 import {API_CONFIG} from "../config/api.config"
 
-export const fetchCartData = (sessionId) => async (dispatch) => {
-  try {
-    const fetchlink = `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}`
-    const response = await axios.get(fetchlink)
-    const data = response.data
-
-    dispatch(addData({data}))
-    
-  } catch (error) {
-    console.error("Error al obtener el carrito:", error)
-  }
-}
+ // Ahora recibe sessionId y userId (userId puede ser 0 si es anónimo)
+export const fetchCartData = (sessionId, userId = 0) => async (dispatch) => {
+    try {
+            // Si userId > 0, lo pasamos como query; si es 0, omitimos en la URL
+            const fetchlink =
+                  userId !== null
+                        ? `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}?userId=${userId}`
+                    : `${API_CONFIG.BASE_URL}/shoppingCart/${sessionId}`
+            
+                const response = await axios.get(fetchlink);
+            const data = response.data;
+            
+                dispatch(addData({ data }));
+        } catch (error) {
+                console.error("Error al obtener el carrito:", error);
+            }
+    };
 
 export const postAddProduct =
-  (productId, quantity = 1, productVariantId, sessionId) =>
+  (productId, quantity = 1, productVariantId, sessionId, userId=null) =>
   async (dispatch) => {
     const payload = {
-      userId: null,
+      userId: userId,
       sessionId: sessionId,
       productId: parseInt(productId),
       quantity: quantity,
@@ -42,9 +47,9 @@ export const postAddProduct =
   }
 
 export const putdeleteProduct =
-  (productId, quantity, productVariantId, sessionId) => async (dispatch) => {
+    (productId, quantity, productVariantId, sessionId, userId = null) => async (dispatch) => {
     const payload = {
-      userId: 0,
+      userId: userId,
       sessionId: sessionId,
       productId: parseInt(productId),
       quantity: parseInt(quantity),

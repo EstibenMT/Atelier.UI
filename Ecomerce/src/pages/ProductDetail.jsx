@@ -17,7 +17,9 @@ const ProductDetail = () => {
   const [showModal, setShowModal] = useState(false)
 
   const dispatch = useDispatch()
-  const {sessionId} = useSelector((state) => state.cart)
+    const { sessionId } = useSelector((state) => state.cart)
+    const userId = useSelector((state) => state.auth.userId) ?? null
+
 
   const handleAddProduct = () => {
     if (!selectedSize || !selectedColor) {
@@ -33,7 +35,7 @@ const ProductDetail = () => {
       alert("No se encontró una variante para la combinación seleccionada.")
       return
     }
-    dispatch(postAddProduct(id, 1, variant.productVariantId, sessionId))
+    dispatch(postAddProduct(id, 1, variant.productVariantId, sessionId,userId))
     setShowModal(true)
   }
 
