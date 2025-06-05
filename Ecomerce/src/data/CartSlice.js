@@ -10,9 +10,9 @@ const initialState = {
     total: 0,
     iva: 0,
     subtotal: 0,
-    address: null,
-    email: "",
-    document:"",
+    address: JSON.parse(localStorage.getItem('address')) || null,
+    email: localStorage.getItem('email') || "",
+    document: localStorage.getItem('document') || "",
 };
 
 const cartSlice = createSlice({
@@ -41,9 +41,15 @@ const cartSlice = createSlice({
             state.address = address;
             state.email = email;
             state.document = document;
+            localStorage.setItem('address', JSON.stringify(address));
+            localStorage.setItem('email', email);
+            localStorage.setItem('document', document);
         },
         clearCart: () => {
             localStorage.removeItem('sessionId');
+            localStorage.removeItem('address');
+            localStorage.removeItem('email');
+            localStorage.removeItem('document');
             return { ...initialState, sessionId: getSessionId() };
         }
     }
