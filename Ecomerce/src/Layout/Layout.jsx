@@ -1,5 +1,4 @@
 // src/Layout/Layout.jsx
-import React, { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,15 +12,32 @@ import Footer from "../components/Footer";
 import logo from "../assets/LogoB.png";
 import { fetchCartData } from "../services/CartService";
 import { logoutThunk } from "../Auth/redux/slices/authSlice";
+//import React, { useEffect} from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function Layout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+    const userMenuRef = useRef(null);
+
     const { quantityProducts} = useSelector((state) => state.cart);
     const { user, token } = useSelector((state) => state.auth);
 
-    // Si hay usuario logueado (token + user), cargamos el carrito
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setUserMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+    
     useEffect(() => {
         if (token && user) {
             dispatch(fetchCartData());
@@ -132,16 +148,33 @@ export default function Layout() {
                                     </div>
                                 </Link>
 
-                                <Link to="/profile">
-                                    <UserCircleIcon className="h-8 w-8 text-white cursor-pointer" />
-                                </Link>
+                                <div className="relative" ref={userMenuRef}>
+                                    <UserCircleIcon
+                                        className="h-8 w-8 text-white cursor-pointer"
+                                        onClick={() => setUserMenuOpen(!isUserMenuOpen)}
+                                    />
+                                    {isUserMenuOpen && (
+                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 py-2">
+                                            <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                                                <p className="font-semibold">{user?.name} {user?.lastName}</p>
+                                                <p className="text-xs">{user?.email}</p>
+                                            </div>
+                                            <Link
+                                                to="/profile"
+                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            >
+                                                Ver perfil
+                                            </Link>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                            >
+                                                Cerrar sesión
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
 
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-500 text-white p-1.5 rounded-md font-semibold px-4 cursor-pointer"
-                                >
-                                    Cerrar sesión
-                                </button>
                             </div>
                         </div>
 

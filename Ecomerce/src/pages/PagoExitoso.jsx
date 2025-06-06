@@ -3,7 +3,7 @@ import { useDispatch, useSelector  } from "react-redux";
 import {LockClosedIcon} from "@heroicons/react/24/solid"
 import { useNavigate } from "react-router-dom"
 import { getSale } from "../services/SaleService";
-import { clearCart } from "../data/cartSlice";
+import { clearCart } from "../data/CartSlice";
 
 const PagoExitoso = () => {
     const navigate = useNavigate()
@@ -14,7 +14,7 @@ const PagoExitoso = () => {
         console.log("Venta creada con:", saleId);
         const fetchSaleData = async () => {
             try {
-                const response = await getSale(saleId,sessionId);
+                const response = await dispatch(getSale(saleId, sessionId, navigate));
                 setData(response);
                 setTimeout(() => {
                     dispatch(clearCart());
@@ -24,7 +24,7 @@ const PagoExitoso = () => {
             }
         };
         fetchSaleData();
-    }, [dispatch,saleId, sessionId]);
+    }, [dispatch,saleId, sessionId, navigate]);
 
     if (!data) {
         return <div className="text-center py-10 text-gray-500">Cargando datos de la compra...</div>;

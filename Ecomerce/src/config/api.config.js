@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BASE_URL: "http://localhost:5209/api",
+  BASE_URL: "http://atelier.runasp.net/api",
   ENDPOINTS: {
     PRODUCTS: "/product/featured",
     CATEGORIES: "/categories",

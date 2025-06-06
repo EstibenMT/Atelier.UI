@@ -3,14 +3,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { clearCart } from '../../../data/CartSlice';
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5209'; // Ajusta si tu API corre en otro puerto
+const BASE_URL = 'http://atelier.runasp.net'; // Ajusta si tu API corre en otro puerto
 
-export const logoutThunk = createAsyncThunk('auth/logoutThunk', async (_, { dispatch }) => {
-  dispatch(logout());
-  dispatch(clearCart());
-});
+export const logoutThunk = createAsyncThunk(
+  'auth/logoutThunk',
+  async (_, { dispatch }) => {
+    dispatch(logout());
+    dispatch(clearCart());
+  }
+);
 
-// Thunk para login: POST a http://localhost:5209/api/auth/login
+// Thunk para login: POST a http://atelier.runasp.net/api/auth/login
 export const loginThunk = createAsyncThunk(
     'auth/login',
     async ({ email, password }, { rejectWithValue }) => {
@@ -29,7 +32,7 @@ export const loginThunk = createAsyncThunk(
     }
 );
 
-// Thunk para register: POST a http://localhost:5209/api/user/register
+// Thunk para register: POST a http://atelier.runasp.net/api/user/register
 export const registerThunk = createAsyncThunk(
     'auth/register',
     async (formData, { rejectWithValue }) => {

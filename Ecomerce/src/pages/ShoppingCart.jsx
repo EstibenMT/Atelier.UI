@@ -58,7 +58,7 @@ const ShoppingCart = () => {
     const handleContinue = async (e) => {
         e.preventDefault();
         try {
-            const stockValidation = await getCheckout(sessionId);
+            const stockValidation = await dispatch(getCheckout(sessionId, navigate));
             const mensajes = validarStock(stockValidation, shoppingCartProducts);
 
             if (mensajes.length > 0) {
@@ -90,7 +90,7 @@ const ShoppingCart = () => {
     const handlePay = async (e) => {
         e.preventDefault();
         try {
-            const stockValidation = await getCheckout(sessionId);
+            const stockValidation = await dispatch(getCheckout(sessionId, navigate));
             
 
             const mensajes = validarStock(stockValidation, shoppingCartProducts);
@@ -103,14 +103,15 @@ const ShoppingCart = () => {
                 return;
             }
 
-            const result = await postSale(
-                shoppingCartId,                 
-                sessionId,      
-                email,    
-                document,           
-                total,                
-                address 
-            )
+            const result = await dispatch(postSale(
+                shoppingCartId,
+                sessionId,
+                email,
+                document,
+                total,
+                address,
+                navigate
+            ));
             const saleId = result.data.saleId;
             await dispatch(addSaleId({ saleId }));
             navigate("/Ecomerce/Pagos");
@@ -122,7 +123,7 @@ const ShoppingCart = () => {
         
     };
     return (
-        <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-100 flex flex-col min-h-128">
+        <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-100 min-h-128">
             {quantityProducts === 0 ? (
                 <div className="col-span-3 flex flex-col items-center justify-center bg-white p-10 rounded shadow-sm text-center h-70">
                     <GiShoppingCart className="w-20 h-20 mb-4 text-gray-400 rotate-350" />
@@ -138,7 +139,7 @@ const ShoppingCart = () => {
                 <>
                         <div className="md:col-span-2">
                             {mode === "cart" ? (
-                                <div className="bg-white rounded-lg shadow-sm bg-white rounded-lg shadow-sm">
+                                <div className="bg-white rounded-lg shadow-sm">
                                     <form >
                                         <h1 className="font-semibold text-lg p-4 border-b">
                                             Carrito de compras ({quantityProducts}) articulos

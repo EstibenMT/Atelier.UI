@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // 👉 Ajusta aquí la URL base al prefijo correcto de tu API
-const BASE_URL = 'http://localhost:5209/api/Auth';
+const BASE_URL = 'http://atelier.runasp.net/api/Auth';
 
 export const loginUser = async (credentials) => {
     const response = await axios.post(`${BASE_URL}/login`, {
