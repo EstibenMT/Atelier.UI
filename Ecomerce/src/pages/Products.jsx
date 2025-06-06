@@ -17,12 +17,13 @@ const Products = () => {
   const location = useLocation()
 
   // Función para obtener el valor de 'search' del query param
-  const getSearchParam = () => {
+
+  useEffect(() => {
+    const getSearchParam = () => {
     const params = new URLSearchParams(location.search)
     return params.get("search") || ""
   }
 
-  useEffect(() => {
     // Si viene del autocompletado, usar los productos filtrados del estado
     if (location.state && location.state.filteredProducts) {
       setProducts(location.state.filteredProducts)
@@ -35,6 +36,7 @@ const Products = () => {
         try {
           const data = await productService.searchProductsByName(searchTerm)
           setProducts(data)
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
           setProducts([])
         }
@@ -46,7 +48,7 @@ const Products = () => {
         try {
           const data = await productService.getFilteredProducts(filters)
           setProducts(data)
-        } catch (error) {
+        } catch {
           setProducts([])
         }
       }

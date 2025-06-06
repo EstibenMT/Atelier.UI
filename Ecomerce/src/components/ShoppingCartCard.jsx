@@ -7,19 +7,21 @@ import { putdeleteProduct, postAddProduct } from "../services/CartService"
 const ShoppingCartCard = ({ shoppingCartProduct}) => {
     const dispatch = useDispatch();
     const { sessionId } = useSelector(state => state.cart);
+    const userId = useSelector((state) => state.auth.userId) ?? null
+
 
     const handleDeleteProduct = () => {
         dispatch(putdeleteProduct(shoppingCartProduct.productId,
             shoppingCartProduct.quantity,
             shoppingCartProduct.product.productVariants[0]?.productVariantId,
-            sessionId));
+            sessionId,userId));
     };
     const handleIncrement = () => {
         dispatch(postAddProduct(
             shoppingCartProduct.productId,
             1,
             shoppingCartProduct.product.productVariants[0]?.productVariantId,
-            sessionId
+            sessionId,userId
         ));
     };
 
@@ -28,7 +30,7 @@ const ShoppingCartCard = ({ shoppingCartProduct}) => {
             shoppingCartProduct.productId,
             -1,
             shoppingCartProduct.product.productVariants[0]?.productVariantId,
-            sessionId
+            sessionId,userId
         ));
     };
     
