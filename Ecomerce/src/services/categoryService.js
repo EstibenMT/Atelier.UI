@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5209/api"
+const API_URL = "http://atelier.runasp.net/api"
 
 export const categoryService = {
   getAll: async () => {
